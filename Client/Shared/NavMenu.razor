@@ -1,0 +1,19 @@
+﻿<MudDrawer @bind-Open="SideBarOpen" Elevation="1">
+	<MudDrawerHeader>
+		<MudAvatar Color="Color.Transparent" Size="Size.Large" Image="assets/conmebol_logo.png" />
+		<MudText Typo="Typo.h5" Color="Color.Primary" Style="margin-top:10px; margin-left:15px;">Polla Conmebol</MudText>
+	</MudDrawerHeader>
+	<MudNavMenu>
+		<MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">Inicio</MudNavLink>
+		<MudNavLink Href="/fetchdata" Icon="@Icons.Filled.Storage">Estadísticas</MudNavLink>
+		<MudNavGroup Title="Expanding" Icon="@Icons.Filled.DashboardCustomize" Expanded="true">
+			<MudNavLink Href="#" Icon="@Icons.Filled.Camera">Photos</MudNavLink>
+			<MudNavLink Href="#" Icon="@Icons.Filled.Celebration">Party</MudNavLink>
+		</MudNavGroup>
+	</MudNavMenu>
+</MudDrawer>
+
+@code {
+	[Parameter]
+	public bool SideBarOpen { get; set; }
+}
