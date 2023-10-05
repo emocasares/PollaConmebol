@@ -8,7 +8,7 @@
       }
     },
     "profiles": {
-      "QuizManagerClientHosted.Server": {
+      "PollaEngendrilClientHosted.Server": {
         "commandName": "Project",
         "dotnetRunMessages": true,
         "launchBrowser": true,

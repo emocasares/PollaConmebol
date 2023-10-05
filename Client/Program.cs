@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
-using QuizManagerClientHosted.Client;
+using PollaEngendrilClientHosted.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -15,11 +15,16 @@ builder.Services.AddHttpClient("ServerAPI",
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
   .CreateClient("ServerAPI"));
 
-builder.Services.AddOidcAuthentication(options =>
+builder.Services.AddAuth0OidcAuthentication(options =>
 {
   builder.Configuration.Bind("Auth0", options.ProviderOptions);
   options.ProviderOptions.ResponseType = "code";
   options.ProviderOptions.AdditionalProviderParameters.Add("audience", builder.Configuration["Auth0:Audience"]);
+
+    var authority = builder.Configuration["Auth0:Authority"];
+    var clientId = builder.Configuration["Auth0:ClientId"];
+    options.ProviderOptions.MetadataSeed.EndSessionEndpoint = $"{authority}/v2/logout?client_id={clientId}&returnTo={builder.HostEnvironment.BaseAddress}";
+
 });
 
 builder.Services.AddMudServices();

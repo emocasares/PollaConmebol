@@ -2,7 +2,7 @@
 using MudBlazor;
 using System.Threading.Tasks;
 
-namespace QuizManagerClientHosted.Shared
+namespace PollaEngendrilClientHosted.Shared
 {
 	public partial class AppBar
 	{

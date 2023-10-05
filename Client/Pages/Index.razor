@@ -1,35 +1,49 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
+<AuthorizeView>
+    <Authorized>
 <PageTitle>Pronósticos</PageTitle>
-<div class="matches">
-    <h1>Eliminatorias Sudamericanas</h1>
+<div class="content">
+    <div class="matches">
+                <h1 style="outline: none !important;">
+                    Eliminatorias Sudamericanas
+                </h1>
+    </div>
+    <div class="matches">
+        <!-- Partido 1: Ecuador vs. Uruguay -->
+        <div class="match">
+            <p>Fecha: 10 de Octubre</p>
+            <p>Hora: 18:00</p>
+            <img src="https://flagcdn.com/w40/ec.png" alt="Bandera de Ecuador">
+            <input type="number" id="score1" placeholder="0">
+            <img src="https://flagcdn.com/w40/uy.png" alt="Bandera de Uruguay">
+            <input type="number" id="score2" placeholder="0">
+        </div>
+        <!-- Partido 2: Perú vs. Brasil -->
+        <div class="match">
+            <p>Fecha: 11 de Octubre</p>
+            <p>Hora: 19:30</p>
+            <img src="https://flagcdn.com/w40/pe.png" alt="Bandera de Perú">
+            <input type="number" id="score3" placeholder="0">
+            <img src="https://flagcdn.com/w40/br.png" alt="Bandera de Brasil">
+            <input type="number" id="score4" placeholder="0">
+        </div>
+        <!-- Partido 3: Bolivia vs. Argentina -->
+        <div class="match">
+            <p>Fecha: 12 de Octubre</p>
+            <p>Hora: 20:00</p>
+            <img src="https://flagcdn.com/w40/bo.png" alt="Bandera de Bolivia">
+            <input type="number" id="score5" placeholder="0">
+            <img src="https://flagcdn.com/w40/ar.png" alt="Bandera de Argentina">
+            <input type="number" id="score6" placeholder="0">
+        </div>
+    </div>
 </div>
-<div class="matches">
-    <!-- Partido 1: Ecuador vs. Uruguay -->
-    <div class="match">
-        <p>Fecha: 10 de Octubre</p>
-        <p>Hora: 18:00</p>
-        <img src="https://flagcdn.com/w40/ec.png" alt="Bandera de Ecuador">
-        <input type="number" id="score1" placeholder="0">
-        <img src="https://flagcdn.com/w40/uy.png" alt="Bandera de Uruguay">
-        <input type="number" id="score2" placeholder="0">
-    </div>
-    <!-- Partido 2: Perú vs. Brasil -->
-    <div class="match">
-        <p>Fecha: 11 de Octubre</p>
-        <p>Hora: 19:30</p>
-        <img src="https://flagcdn.com/w40/pe.png" alt="Bandera de Perú">
-        <input type="number" id="score3" placeholder="0">
-        <img src="https://flagcdn.com/w40/br.png" alt="Bandera de Brasil">
-        <input type="number" id="score4" placeholder="0">
-    </div>
-    <!-- Partido 3: Bolivia vs. Argentina -->
-    <div class="match">
-        <p>Fecha: 12 de Octubre</p>
-        <p>Hora: 20:00</p>
-        <img src="https://flagcdn.com/w40/bo.png" alt="Bandera de Bolivia">
-        <input type="number" id="score5" placeholder="0">
-        <img src="https://flagcdn.com/w40/ar.png" alt="Bandera de Argentina">
-        <input type="number" id="score6" placeholder="0">
-    </div>
-</div>
+ </Authorized>
+    <NotAuthorized>
+        <h1>Hum, hum, hum</h1>
+        <p>Primero, inicia sesión: <a href="authentication/login" class="login-logout">Log in</a></p>
+    </NotAuthorized>
+</AuthorizeView>

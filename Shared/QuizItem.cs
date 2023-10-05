@@ -1,4 +1,4 @@
-namespace QuizManagerClientHosted.Shared;
+namespace PollaEngendrilClientHosted.Shared;
 public class QuizItem
 {
   public string Question { get; set; }

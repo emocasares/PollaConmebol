@@ -1,8 +1,8 @@
-using QuizManagerClientHosted.Shared;
+using PollaEngendrilClientHosted.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-namespace QuizManagerClientHosted.Server.Controllers;
+namespace PollaEngendrilClientHosted.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
