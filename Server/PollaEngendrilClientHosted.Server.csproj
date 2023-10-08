@@ -17,5 +17,10 @@
     <ProjectReference Include="..\Shared\PollaEngendrilClientHosted.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Entity\" />
+    <Folder Include="Models\DTO\" />
+  </ItemGroup>
+
 
 </Project>

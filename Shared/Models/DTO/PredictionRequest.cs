@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PollaEngendrilClientHosted.Shared
+namespace PollaEngendrilClientHosted.Shared.Models.DTO
 {
-    public class PredictionRequest
+    public class PredictionRequestDTO
     {
         public int MatchId { get; set; }
         public int HomeTeamScore { get; set; }

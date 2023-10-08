@@ -1,10 +1,11 @@
 ﻿using PollaEngendrilClientHosted.Shared;
+using PollaEngendrilClientHosted.Shared.Models.DTO;
 
 namespace PollaEngendrilClientHosted.Server.Services
 {
     public interface IPredictionService
     {
-        int CalculatePoints(MatchResult actualResult, MatchResult predictedResult);
+        PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult);
 
     }
 }

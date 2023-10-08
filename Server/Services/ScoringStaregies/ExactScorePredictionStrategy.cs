@@ -1,15 +1,16 @@
 ﻿using PollaEngendrilClientHosted.Shared;
+using PollaEngendrilClientHosted.Shared.Models.DTO;
 
-namespace PollaEngendrilClientHosted.Server.Services.Staregies
+namespace PollaEngendrilClientHosted.Server.Services.ScoringStaregies
 {
     public class ExactScorePredictionStrategy : IPredictionStrategy
     {
-        public int CalculatePoints(MatchResult actualResult, MatchResult predictedResult)
+        public int CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)
         {
             if (actualResult.HomeTeamScore == predictedResult.HomeTeamScore &&
                 actualResult.AwayTeamScore == predictedResult.AwayTeamScore)
             {
-                return 5; // Exact score prediction awards 5 points.
+                return 5;
             }
             return 0;
         }

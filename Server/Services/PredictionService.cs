@@ -1,12 +1,9 @@
-﻿using PollaEngendrilClientHosted.Shared;
+﻿using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
+using PollaEngendrilClientHosted.Shared;
+using PollaEngendrilClientHosted.Shared.Models.DTO;
 
 namespace PollaEngendrilClientHosted.Server.Services
 {
-    public interface IPredictionStrategy
-    {
-        int CalculatePoints(MatchResult actualResult, MatchResult predictedResult);
-    }
-
     public class PredictionService : IPredictionService
     {
         private readonly IPredictionStrategy exactScorePredictionStrategy;
@@ -18,7 +15,7 @@ namespace PollaEngendrilClientHosted.Server.Services
             this.winnerOrTiePredictionStrategy = winnerOrTiePredictionStrategy;
         }
 
-        public int CalculatePoints(MatchResult actualResult, MatchResult predictedResult)
+        public PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)
         {
             int points = 0;
 
@@ -36,7 +33,12 @@ namespace PollaEngendrilClientHosted.Server.Services
             points += exactScorePredictionStrategy.CalculatePoints(actualResult, predictedResult);
             points += winnerOrTiePredictionStrategy.CalculatePoints(actualResult, predictedResult);
 
-            return points;
+            var response = new PredictionResponseDTO
+            {
+                Points = points
+            };
+
+            return response;
         }
     }
 }

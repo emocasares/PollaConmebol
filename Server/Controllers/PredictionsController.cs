@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PollaEngendrilClientHosted.Server.Services;
 using PollaEngendrilClientHosted.Shared;
+using PollaEngendrilClientHosted.Shared.Models.DTO;
 
 namespace PollaEngendrilClientHosted.Server.Controllers
 {
@@ -19,20 +20,21 @@ namespace PollaEngendrilClientHosted.Server.Controllers
         }
 
         [HttpPost("calculate-points")]
-        public IActionResult CalculatePoints([FromBody] PredictionRequest request)
+        public IActionResult CalculatePoints([FromBody] PredictionRequestDTO request)
         {
             if (request == null)
             {
                 return BadRequest("Invalid request.");
             }
 
-            // Assume you have actual match results and a user's predicted match results.
             MatchResult actualResult = GetActualMatchResult();
-            var predictedResult = new MatchResult { AwayTeamScore = request.AwayTeamScore, HomeTeamScore = request.HomeTeamScore};
+            if (actualResult == null)
+            {
+                return NotFound();
+            }
 
-            int points = predictionService.CalculatePoints(actualResult, predictedResult);
-
-            return Ok(new { Points = points });
+            PredictionResponseDTO response = predictionService.CalculatePoints(actualResult, request);
+            return Ok(response);
         }
 
         private MatchResult GetActualMatchResult()
