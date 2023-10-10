@@ -37,6 +37,13 @@ namespace PollaEngendrilClientHosted.Server.Controllers
             return Ok(response);
         }
 
+        [HttpGet("leaderboard")]
+        public IActionResult GetLeaderboard()
+        {
+            var leaderboard = predictionService.CalculateLeaderboard();
+            return Ok(leaderboard);
+        }
+
         private MatchResult GetActualMatchResult()
         {
             // Implement logic to retrieve actual match results from your data source.

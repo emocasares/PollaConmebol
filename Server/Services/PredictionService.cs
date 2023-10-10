@@ -1,6 +1,7 @@
 ﻿using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
 using PollaEngendrilClientHosted.Shared;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
+using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 
 namespace PollaEngendrilClientHosted.Server.Services
 {
@@ -13,6 +14,18 @@ namespace PollaEngendrilClientHosted.Server.Services
         {
             this.exactScorePredictionStrategy = exactScorePredictionStrategy;
             this.winnerOrTiePredictionStrategy = winnerOrTiePredictionStrategy;
+        }
+
+        public List<PlayerLeaderboardViewModel> CalculateLeaderboard()
+        {
+
+            var leaderboard = new List<PlayerLeaderboardViewModel>
+            {
+                new PlayerLeaderboardViewModel { Position = 1, Name = "Jugador 1", Score = 20 },
+                new PlayerLeaderboardViewModel { Position = 2, Name = "Jugador 2", Score = 18 },
+            };
+
+            return leaderboard;
         }
 
         public PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)

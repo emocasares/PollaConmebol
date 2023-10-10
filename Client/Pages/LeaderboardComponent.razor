@@ -1,5 +1,47 @@
-﻿<h3>LeaderboardComponent</h3>
+﻿@page "/Leaderboard"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using PollaEngendrilClientHosted.Client.Services;
+@using PollaEngendrilClientHosted.Shared.Models.ViewModel;
+
+@inject IPredictionApiService predictionApiService
+
+<PageTitle>Leaderboard</PageTitle>
+<div class="content">
+    <div class="matches">
+        <h1 style="outline: none !important;">
+            Tabla de Posiciones
+        </h1>
+    </div>
+</div>
+<MudContainer>
+    <MudCard>
+        <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
+            <HeaderContent>
+                <MudTh>Posición</MudTh>
+                <MudTh>Usuario</MudTh>
+                <MudTh>Puntos</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Position</MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Score</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudCard>
+</MudContainer>
 
 @code {
+    private List<PlayerLeaderboardViewModel> leaderboard;
+    private bool _loading;
 
+    private async Task LoadLeaderboard()
+    {
+        leaderboard = await predictionApiService.GetLeaderboardAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLeaderboard();
+    }
 }

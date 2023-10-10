@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using PollaEngendrilClientHosted.Server.Services;
+using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
 
 namespace PollaEngendrilClientHosted.Server;
 public class Program
@@ -22,6 +24,10 @@ public class Program
 
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
+
+        builder.Services.AddScoped<IPredictionService, PredictionService>();
+        builder.Services.AddScoped<IPredictionStrategy, ExactScorePredictionStrategy>();
+        builder.Services.AddScoped<IPredictionStrategy, WinnerOrTiePredictionStrategy>();
 
         var app = builder.Build();
 

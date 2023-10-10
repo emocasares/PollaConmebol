@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using PollaEngendrilClientHosted.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using PollaEngendrilClientHosted.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,5 +29,8 @@ builder.Services.AddAuth0OidcAuthentication(options =>
 });
 
 builder.Services.AddMudServices();
+
+builder.Services.AddScoped<IPredictionApiService, PredictionApiService>();
+
 
 await builder.Build().RunAsync();
