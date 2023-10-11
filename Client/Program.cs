@@ -31,6 +31,7 @@ builder.Services.AddAuth0OidcAuthentication(options =>
 builder.Services.AddMudServices();
 
 builder.Services.AddScoped<IPredictionApiService, PredictionApiService>();
+builder.Services.AddScoped<IFixturesApiService, FixturesApiService>();
 
 
 await builder.Build().RunAsync();

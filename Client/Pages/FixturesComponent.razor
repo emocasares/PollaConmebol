@@ -1,5 +1,8 @@
-﻿@attribute [Authorize]
+﻿@using PollaEngendrilClientHosted.Client.Services;
+@using PollaEngendrilClientHosted.Shared.Models.ViewModel;
+@attribute [Authorize]
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IFixturesApiService fixturesApiService
 
 <AuthorizeView>
     <Authorized>
@@ -11,33 +14,31 @@
                 </h1>
             </div>
             <div class="matches">
-                <!-- Partido 1: Ecuador vs. Uruguay -->
-                <div class="match">
-                    <p>Fecha: 10 de Octubre</p>
-                    <p>Hora: 18:00</p>
-                    <img src="https://flagcdn.com/w40/ec.png" alt="Bandera de Ecuador">
-                    <input type="number" id="score1" placeholder="0">
-                    <img src="https://flagcdn.com/w40/uy.png" alt="Bandera de Uruguay">
-                    <input type="number" id="score2" placeholder="0">
-                </div>
-                <!-- Partido 2: Perú vs. Brasil -->
-                <div class="match">
-                    <p>Fecha: 11 de Octubre</p>
-                    <p>Hora: 19:30</p>
-                    <img src="https://flagcdn.com/w40/pe.png" alt="Bandera de Perú">
-                    <input type="number" id="score3" placeholder="0">
-                    <img src="https://flagcdn.com/w40/br.png" alt="Bandera de Brasil">
-                    <input type="number" id="score4" placeholder="0">
-                </div>
-                <!-- Partido 3: Bolivia vs. Argentina -->
-                <div class="match">
-                    <p>Fecha: 12 de Octubre</p>
-                    <p>Hora: 20:00</p>
-                    <img src="https://flagcdn.com/w40/bo.png" alt="Bandera de Bolivia">
-                    <input type="number" id="score5" placeholder="0">
-                    <img src="https://flagcdn.com/w40/ar.png" alt="Bandera de Argentina">
-                    <input type="number" id="score6" placeholder="0">
-                </div>
+            @if (fixtures != null)
+            {
+                int matchIndex = 0;
+                @foreach (var fixture in fixtures)
+                {
+                    <div class="match">
+                        <p>Fecha: @fixture.Date</p>
+                        <p>Hora: @fixture.Time</p>
+                            <!-- Pronóstico -->
+                            <div class="pronostico">
+                                <div class="banderas">
+                                        <img src="@fixture.HomeTeamFlag" alt="Bandera de @fixture.HomeTeam" style="margin-left: 20px;">
+                                        <img src="@fixture.AwayTeamFlag" alt="Bandera de @fixture.AwayTeam">
+                                </div>
+                                    <input type="number" id="score{@matchIndex}0" placeholder="0">
+                                    <input type="number" id="score{@matchIndex}1" placeholder="0">
+                            </div>
+                            <!-- Resultado Real -->
+                            <div class="real-score">
+                                <input type="number" id="real-score1" placeholder="0" disabled>
+                                <input type="number" id="real-score2" placeholder="0" disabled>
+                            </div>
+                    </div>
+                }
+            }
             </div>
         </div>
     </Authorized>
@@ -45,3 +46,18 @@
         <NoAuthorizedComponent></NoAuthorizedComponent>
     </NotAuthorized>
 </AuthorizeView>
+
+@code {
+
+    private IEnumerable<FixtureViewModel> fixtures;
+
+    private async Task LoadFixtures()
+    {
+        fixtures = await fixturesApiService.GetFixtures();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFixtures();
+    }
+}

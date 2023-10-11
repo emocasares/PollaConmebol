@@ -42,7 +42,11 @@ button {
     cursor: pointer;
 }
 
-    button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-    }
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pronostico, .real-score {
+    margin-bottom: 10px; /* Espaciado de 10px entre las filas internas */
+}

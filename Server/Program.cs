@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PollaEngendrilClientHosted.Server.Services;
 using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
+using Microsoft.EntityFrameworkCore;
+using PollaEngendrilClientHosted.Server.Data;
 
 namespace PollaEngendrilClientHosted.Server;
 public class Program
@@ -22,10 +24,16 @@ public class Program
                 };
             });
 
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
+
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
 
         builder.Services.AddScoped<IPredictionService, PredictionService>();
+        builder.Services.AddScoped<IFixturesService, FixturesService>();
         builder.Services.AddScoped<IPredictionStrategy, ExactScorePredictionStrategy>();
         builder.Services.AddScoped<IPredictionStrategy, WinnerOrTiePredictionStrategy>();
 

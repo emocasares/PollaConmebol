@@ -1,13 +1,12 @@
 ﻿using PollaEngendrilClientHosted.Shared.Models.DTO;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace PollaEngendrilClientHosted.Client.Services
 {
-    public class PredictionApiService : IPredictionApiService
+    public class PredictionApiService : HttpClient, IPredictionApiService
     {
-        private readonly HttpClient _httpClient;
+        HttpClient _httpClient;
 
         public PredictionApiService(HttpClient httpClient)
         {

@@ -4,6 +4,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using HtmlAgilityPack;
 using System.Threading;
+using PollaEngendrilClientHosted.Shared.Models.Entity;
+using System.Text.RegularExpressions;
 
 class Program
 {
@@ -73,6 +75,32 @@ class Program
                         Console.WriteLine($"Marcador: {equipo1} {golesEquipo1} - {equipo2} {golesEquipo2} ");
                         Console.WriteLine("Fecha del Partido: " + fechaPartido);
                         Console.WriteLine();
+                        var match = new PollaEngendrilClientHosted.Shared.Models.Entity.Match { HomeTeam = equipo1, AwayTeam = equipo2, HomeTeamFlag =  bandera1, AwayTeamFlag = bandera2};
+                        if (!golesEquipo1.Equals(" X "))
+                            match.HomeTeamScore = int.Parse(golesEquipo1);
+                        if (!golesEquipo2.Equals(" X "))
+                            match.AwayTeamScore = int.Parse(golesEquipo2);
+                        var fechaExactaPartido = DateTime.Now;
+
+                        if (nodeFechaPartidoNoJugado != null)
+                        {
+                            string patternCurrentyear = @"^\w{3}, \d{2}/\d{2}$";
+                            var regexMatch = Regex.Match(nodeFechaPartidoNoJugado.ChildNodes[0].InnerText, patternCurrentyear);
+                            if (regexMatch.Success)
+                            {
+                                string fechaCompleta = regexMatch.Groups[1].Value;
+                                string[] partes = fechaCompleta.Split('/');
+
+                                if (partes.Length == 2)
+                                {
+                                    int dia = int.Parse(partes[0]);
+                                    int mes = int.Parse(partes[1]);
+                                    int anio = 2023;
+                                    fechaExactaPartido = new DateTime(anio, mes, dia);
+                                }
+                            }
+                        }
+                        match.Date = fechaExactaPartido;
                     }
                 }
                 
