@@ -14,10 +14,10 @@ namespace PollaEngendrilClientHosted.Server.Services
         {
             var matches = dbContext.Matches.ToList();
             var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
-
+            var predictions = dbContext.Predictions.Where(u => u.UserId == user.Id).ToList();
             var fixtures = matches.Select(match =>
             {
-                var prediction = user != null ? dbContext.Predictions.FirstOrDefault(p => p.MatchId == match.Id && p.UserId == user.Id) : null;
+                var prediction = user != null ? predictions.FirstOrDefault(p => p.MatchId == match.Id) : null;
                 return new FixtureViewModel
                 {
                     Id = match.Id,

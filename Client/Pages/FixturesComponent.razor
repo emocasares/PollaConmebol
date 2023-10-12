@@ -43,14 +43,14 @@
                                 <input type="number" id="awayScore@fixture.Id" 
                                        placeholder=""
                                        @bind="@fixture.AwayTeamPredictedScore"
-                                       disabled="@@IsInputDisabled(fixture, isHome: false)"
+                                       disabled="@IsInputDisabled(fixture, isHome: false)"
                                        class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "")">
 
                             </div>
                             <!-- Resultado Real -->
                             <div class="real-score">
-                                <input type="number" id="real-score1" placeholder="" value="@fixture.HomeTeamRealScore" disabled>
-                                <input type="number" id="real-score2" placeholder="" value="@fixture.AwayTeamRealScore" disabled>
+                                <input type="number" id="real-score1" placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
+                                <input type="number" id="real-score2" placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
                             </div>
                             @if (!fixture.HomeTeamRealScore.HasValue)
                             {
@@ -81,25 +81,32 @@
     bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
     {
         if (isHome)
-            return fixture.HomeTeamRealScore.HasValue || fixture.HomeTeamPredictedScore.HasValue || fixture.IsLocked;
-        return fixture.AwayTeamRealScore.HasValue || fixture.AwayTeamPredictedScore.HasValue || fixture.IsLocked;
+        {
+            return fixture.HomeTeamRealScore.HasValue || fixture.IsLocked;
+        }
+        return fixture.AwayTeamRealScore.HasValue || fixture.IsLocked;
     }
 
     private async Task GetUserId()
     {
-        if (!UserState.UserId.HasValue)
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
         {
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-            var userName = user.Identity.Name;
-            var userId = await usersApiService.GetUserIdByUserName(userName);
-            if (userId == -1)
+            if (!UserState.UserId.HasValue)
             {
-                userId = await usersApiService.CreateUser(userName);
+                var userName = user.Identity.Name;
+                var userId = await usersApiService.GetUserIdByUserName(userName);
+                if (userId == -1)
+                {
+                    userId = await usersApiService.CreateUser(userName);
+                }
+                UserState.UserId = userId;
             }
-            UserState.UserId = userId;
         }
     }
+
 
     private async Task LoadFixtures()
     {
