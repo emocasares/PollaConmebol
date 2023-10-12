@@ -1,5 +1,6 @@
 ﻿@page "/Leaderboard"
 @attribute [Authorize]
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using PollaEngendrilClientHosted.Client.Services;
 @using PollaEngendrilClientHosted.Shared.Models.ViewModel;
@@ -14,22 +15,31 @@
         </h1>
     </div>
 </div>
-<MudContainer>
-    <MudCard>
-        <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
-            <HeaderContent>
-                <MudTh>Posición</MudTh>
-                <MudTh>Usuario</MudTh>
-                <MudTh>Puntos</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd>@context.Position</MudTd>
-                <MudTd>@context.Name</MudTd>
-                <MudTd>@context.Score</MudTd>
-            </RowTemplate>
-        </MudTable>
-    </MudCard>
-</MudContainer>
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer>
+            <MudCard>
+                <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
+                    <HeaderContent>
+                        <MudTh>Posición</MudTh>
+                        <MudTh>Usuario</MudTh>
+                        <MudTh>Puntos</MudTh>
+                    </HeaderContent>
+                    <RowTemplate Context="player">
+                        <MudTd>@player.Position</MudTd>
+                        <MudTd>@player.Name</MudTd>
+                        <MudTd>@player.Score</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudCard>
+        </MudContainer>
+    </Authorized>
+    <NotAuthorized>
+        <a href="authentication/login" class="login-logout">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
+
 
 @code {
     private List<PlayerLeaderboardViewModel> leaderboard;

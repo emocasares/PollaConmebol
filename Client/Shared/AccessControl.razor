@@ -1,8 +1,12 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using PollaEngendrilClientHosted.Client.Services;
+@using PollaEngendrilClientHosted.Client.State;
 
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
+@inject IUsersApiService usersApiService
+@inject UserState UserState
 
 <AuthorizeView>
     <Authorized>

@@ -11,18 +11,18 @@ public class FixturesApiService : IFixturesApiService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<FixtureViewModel>> GetFixtures()
+    public async Task<IEnumerable<FixtureViewModel>> GetFixtures(string user)
     {
         try
         {
-            var response = await _httpClient.GetAsync("api/fixture/matches");
+            var response = await _httpClient.GetAsync($"api/fixture/matches/{user}");
             response.EnsureSuccessStatusCode();
             var fixtures = await response.Content.ReadFromJsonAsync<List<FixtureViewModel>>();
             return fixtures;
         }
-        catch (Exception ex)
+        catch
         {
-            throw;
+            return null;
         }
     }
 }

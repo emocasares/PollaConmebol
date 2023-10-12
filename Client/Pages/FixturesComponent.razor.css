@@ -50,3 +50,9 @@ button:disabled {
 .pronostico, .real-score {
     margin-bottom: 10px; /* Espaciado de 10px entre las filas internas */
 }
+
+.is-invalid {
+    border-color: red;
+    background-color: #f2dede;
+    color: #a94442;
+}

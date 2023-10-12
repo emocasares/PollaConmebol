@@ -1,10 +1,13 @@
 @page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Microsoft.Extensions.Configuration
+@using PollaEngendrilClientHosted.Client.State;
 
 @inject SignOutSessionStateManager SignOutManager
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
+@inject UserState UserState
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <RemoteAuthenticatorView Action="@Action">
     <LogOut>
@@ -15,8 +18,23 @@
             Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
         }
     </LogOut>
+    <CompletingLoggingIn>
+        @{
+            async Task HandleLoggingInAsync()
+            {
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                var userName = user.Identity.Name;
+                UserState.UserName = userName;
+            }
+
+            var loggingInTask = HandleLoggingInAsync();
+
+        }
+    </CompletingLoggingIn>
 </RemoteAuthenticatorView>
 
 @code{
-    [Parameter] public string Action { get; set; }
+    [Parameter] 
+    public string Action { get; set; }
 }

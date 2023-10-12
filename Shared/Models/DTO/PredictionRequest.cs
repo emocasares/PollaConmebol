@@ -9,7 +9,8 @@ namespace PollaEngendrilClientHosted.Shared.Models.DTO
     public class PredictionRequestDTO
     {
         public int MatchId { get; set; }
-        public int HomeTeamScore { get; set; }
-        public int AwayTeamScore { get; set; }
+        public int? HomeTeamScore { get; set; }
+        public int? AwayTeamScore { get; set; }
+        public int UserId { get; set; }
     }
 }

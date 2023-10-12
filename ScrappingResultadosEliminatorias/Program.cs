@@ -6,13 +6,45 @@ using HtmlAgilityPack;
 using System.Threading;
 using PollaEngendrilClientHosted.Shared.Models.Entity;
 using System.Text.RegularExpressions;
+using ScrappingResultadosEliminatorias.Services;
+using PollaEngendrilClientHosted.Server.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using System;
+using Humanizer.Configuration;
 
-class Program
+
+internal class Program
 {
-    static void Main(string[] args)
+    public static IConfiguration Configuration { get; set; }
+
+    private static async Task Main(string[] args)
     {
         try
         {
+
+            var builder = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json");
+
+            Configuration = builder.Build();
+
+
+            // Read the connection string from the configuration
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            var serviceProvider = new ServiceCollection()
+           .AddDbContext<ApplicationDbContext>(options =>
+           {
+               options.UseSqlServer(connectionString); 
+           })
+           .BuildServiceProvider();
+
+            using (var context = serviceProvider.GetRequiredService<ApplicationDbContext>())
+
+
             using (IWebDriver driver = new ChromeDriver())
             {
                 driver.Navigate().GoToUrl("https://www.google.com/search?q=conmebol+qualifiers&sca_esv=571003301&sxsrf=AM9HkKmJlo2qrTJJS8CX89-I36q7iOVkrg%3A1696528098923&source=hp&ei=4vYeZci4NICmqtsP96CGkAM&iflsig=AO6bgOgAAAAAZR8E8vB-h30eVfxphbSWdMuwAEXLZfZt&gs_ssp=eJzj4tZP1zc0MjLLzbNMMWD0Ek7Oz8tNTcrPUSgsTczJTMtMLSoGALEfC1A&oq=conmebol+q&gs_lp=Egdnd3Mtd2l6Igpjb25tZWJvbCBxKgIIATIIEAAYywEYgAQyBRAuGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgARImjxQAFjpHXABeACQAQCYAYECoAGnD6oBBjAuMTAuMbgBA8gBAPgBAcICBBAjGCfCAgcQLhiKBRgnwgILEC4YgAQYxwEY0QPCAgcQIxiKBRgnwgIMECMYigUYExiABBgnwgIIEC4YywEYgATCAgoQLhjLARiABBgKwgIHEC4YgAQYCsICBxAAGIAEGAo&sclient=gws-wiz#sie=lg;/g/11t9_xctp4;2;/g/1226mn9d;mt;fp;1;;;");
@@ -39,6 +71,9 @@ class Program
 
                 driver.Quit();
 
+                var matchService = new MatchService(context);
+
+
                 HtmlDocument doc = new();
                 doc.LoadHtml(html);
 
@@ -62,8 +97,8 @@ class Program
                         string bandera1 = $"{protocolo}:{nodesBanderas[0].ChildNodes[0].Attributes["src"].Value}";
                         string bandera2 = $"{protocolo}:{nodesBanderas[1].ChildNodes[0].Attributes["src"].Value}";
 
-                        var nodeGolesEquipos = partido.SelectNodes(".//td[contains(@class, 'tns-c')]/div/div[contains(@class, 'imspo_mt__tt-w')]"); 
-                        string golesEquipo1 = nodeGolesEquipos !=null ? nodeGolesEquipos[0].InnerText:" X ";
+                        var nodeGolesEquipos = partido.SelectNodes(".//td[contains(@class, 'tns-c')]/div/div[contains(@class, 'imspo_mt__tt-w')]");
+                        string golesEquipo1 = nodeGolesEquipos != null ? nodeGolesEquipos[0].InnerText : " X ";
                         string golesEquipo2 = nodeGolesEquipos != null ? nodeGolesEquipos[1].InnerText : " X ";
 
                         var nodeFechaPartidoJugado = partido.SelectSingleNode(".//div[@class='imspo_mt__cmd']//span[last()]");
@@ -75,14 +110,32 @@ class Program
                         Console.WriteLine($"Marcador: {equipo1} {golesEquipo1} - {equipo2} {golesEquipo2} ");
                         Console.WriteLine("Fecha del Partido: " + fechaPartido);
                         Console.WriteLine();
-                        var match = new PollaEngendrilClientHosted.Shared.Models.Entity.Match { HomeTeam = equipo1, AwayTeam = equipo2, HomeTeamFlag =  bandera1, AwayTeamFlag = bandera2};
+                        var match = new PollaEngendrilClientHosted.Shared.Models.Entity.Match { HomeTeam = equipo1, AwayTeam = equipo2, HomeTeamFlag = bandera1, AwayTeamFlag = bandera2 };
                         if (!golesEquipo1.Equals(" X "))
                             match.HomeTeamScore = int.Parse(golesEquipo1);
                         if (!golesEquipo2.Equals(" X "))
                             match.AwayTeamScore = int.Parse(golesEquipo2);
                         var fechaExactaPartido = DateTime.Now;
 
-                        if (nodeFechaPartidoNoJugado != null)
+                        if (nodeFechaPartidoJugado != null)
+                        {
+                            string patternPartidoJugado = @"^(\d{1,2}/\d{1,2})$";
+                            var regexMatch = Regex.Match(nodeFechaPartidoJugado.InnerText, patternPartidoJugado);
+                            if (regexMatch.Success)
+                            {
+                                string fechaCompleta = regexMatch.Groups[1].Value;
+                                string[] partes = fechaCompleta.Split('/');
+
+                                if (partes.Length == 2)
+                                {
+                                    int dia = int.Parse(partes[0]);
+                                    int mes = int.Parse(partes[1]);
+                                    int anio = 2023;
+                                    fechaExactaPartido = new DateTime(anio, mes, dia);
+                                }
+                            }
+                        }
+                        else if (nodeFechaPartidoNoJugado != null)
                         {
                             string patternCurrentyear = @"^\w{3}, \d{2}/\d{2}$";
                             var regexMatch = Regex.Match(nodeFechaPartidoNoJugado.ChildNodes[0].InnerText, patternCurrentyear);
@@ -99,11 +152,32 @@ class Program
                                     fechaExactaPartido = new DateTime(anio, mes, dia);
                                 }
                             }
+                            else
+                            {
+                                string patternNextYear = @"^(\d{1,2}/\d{1,2}/\d{2})$";
+                                var matchNextYear = Regex.Match(nodeFechaPartidoNoJugado.ChildNodes[0].InnerText, patternNextYear);
+                                if (matchNextYear.Success)
+                                {
+                                    string fechaCompleta = matchNextYear.Groups[1].Value;
+                                    string[] partes = fechaCompleta.Split('/');
+
+                                    if (partes.Length == 3)
+                                    {
+                                        int dia = int.Parse(partes[0]);
+                                        int mes = int.Parse(partes[1]);
+                                        int anho = int.Parse(partes[2]) + 2000;
+                                        fechaExactaPartido = new DateTime(anho, mes, dia);
+                                    }
+                                }
+
+                            }
                         }
                         match.Date = fechaExactaPartido;
+                        Console.WriteLine(match.Date.ToLongDateString());
+                        await matchService.InsertOrUpdateMatchAsync(match);
                     }
                 }
-                
+
             }
         }
         catch (Exception ex)

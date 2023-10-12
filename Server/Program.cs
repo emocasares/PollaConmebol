@@ -4,6 +4,8 @@ using PollaEngendrilClientHosted.Server.Services;
 using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
 using Microsoft.EntityFrameworkCore;
 using PollaEngendrilClientHosted.Server.Data;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace PollaEngendrilClientHosted.Server;
 public class Program
@@ -14,13 +16,14 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, c =>
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                c.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";
-                c.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidAudience = builder.Configuration["Auth0:Audience"],
-                    ValidIssuer = $"https://{builder.Configuration["Auth0:Domain"]}"
+                    ValidIssuer = $"https://{builder.Configuration["Auth0:Domain"]}",
+                    NameClaimType = ClaimTypes.NameIdentifier
                 };
             });
 
@@ -36,6 +39,7 @@ public class Program
         builder.Services.AddScoped<IFixturesService, FixturesService>();
         builder.Services.AddScoped<IPredictionStrategy, ExactScorePredictionStrategy>();
         builder.Services.AddScoped<IPredictionStrategy, WinnerOrTiePredictionStrategy>();
+        builder.Services.AddScoped<IUsersService, UsersService>();
 
         var app = builder.Build();
 

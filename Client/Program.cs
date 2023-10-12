@@ -4,6 +4,8 @@ using MudBlazor.Services;
 using PollaEngendrilClientHosted.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using PollaEngendrilClientHosted.Client.Services;
+using PollaEngendrilClientHosted.Client.State;
+using MudBlazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,10 +30,22 @@ builder.Services.AddAuth0OidcAuthentication(options =>
 
 });
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 2000;
+    config.SnackbarConfiguration.HideTransitionDuration = 200;
+    config.SnackbarConfiguration.ShowTransitionDuration = 200;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
 
 builder.Services.AddScoped<IPredictionApiService, PredictionApiService>();
 builder.Services.AddScoped<IFixturesApiService, FixturesApiService>();
+builder.Services.AddScoped<IUsersApiService, UsersApiService>();
+builder.Services.AddScoped<UserState>();
 
 
 await builder.Build().RunAsync();

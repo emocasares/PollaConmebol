@@ -30,6 +30,15 @@ namespace PollaEngendrilClientHosted.Client.Services
             }
         }
 
+        public async Task<bool> SavePredictionsAsync(PredictionRequestDTO prediction)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/predictions/save-predictions", prediction);
+            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+                return true;
+            return false;
+        }
+
         public async Task<int> CalculatePointsAsync(PredictionRequestDTO predictionRequest)
         {
             var response = await _httpClient.PostAsJsonAsync("api/predictions/calculate-points", predictionRequest);

@@ -1,12 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PollaEngendrilClientHosted.Server.Services;
 
 namespace PollaEngendrilClientHosted.Server.Controllers
 {
-    public class UserController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IUsersService usersService;
+        public UserController(IUsersService usersService)
         {
-            return View();
+            this.usersService = usersService;
+        }
+
+        [HttpGet("userid/{username}")]
+        public IActionResult GetUserByUsername(string username)
+        {
+            var userId = usersService.GetUserIdByUsername(username);
+            return Ok(userId);
+        }
+
+        [HttpPost("{username}")]
+        public IActionResult CreateUser(string username)
+        {
+            var userId = usersService.CreateUser(username);
+            return Ok(userId);
         }
     }
 }

@@ -44,11 +44,29 @@ namespace PollaEngendrilClientHosted.Server.Controllers
             return Ok(leaderboard);
         }
 
+        [HttpPost("save-predictions")]
+        public async Task<IActionResult> SavePredictions([FromBody] PredictionRequestDTO prediction)
+        {
+            try
+            {
+                await this.predictionService.SavePrediction(prediction);
+                return Ok("La predicción se ha guardado exitosamente.");
+
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores
+                return StatusCode(500, "Se ha producido un error al guardar la predicción: " + ex.Message);
+            }
+        }
+
         private MatchResult GetActualMatchResult()
         {
             // Implement logic to retrieve actual match results from your data source.
             // For simplicity, we'll create a mock result here.
             return new MatchResult { HomeTeamScore = 2, AwayTeamScore = 1 };
         }
+
+
     }
 }

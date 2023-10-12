@@ -1,5 +1,6 @@
 ﻿using PollaEngendrilClientHosted.Shared;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
+using PollaEngendrilClientHosted.Shared.Models.Entity;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 
 namespace PollaEngendrilClientHosted.Server.Services
@@ -8,6 +9,6 @@ namespace PollaEngendrilClientHosted.Server.Services
     {
         PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult);
         List<PlayerLeaderboardViewModel> CalculateLeaderboard();
-
+        Task SavePrediction(PredictionRequestDTO newPrediction);
     }
 }

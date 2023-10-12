@@ -5,6 +5,7 @@ using PollaEngendrilClientHosted.Client.Services;
 using PollaEngendrilClientHosted.Server.Services;
 using PollaEngendrilClientHosted.Shared;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
+using PollaEngendrilClientHosted.Shared.Models.Entity;
 
 namespace PollaEngendrilClientHosted.Server.Controllers
 {
@@ -14,17 +15,22 @@ namespace PollaEngendrilClientHosted.Server.Controllers
     public class FixtureController : ControllerBase
     {
         private readonly IFixturesService fixturesService;
+        private readonly IPredictionService predictionService;
+        private readonly IUsersService usersService;
 
-        public FixtureController(IFixturesService fixturesService)
+        public FixtureController(IPredictionService predictionService, IFixturesService fixturesService, IUsersService usersService)
         {
+            this.predictionService = predictionService;
             this.fixturesService = fixturesService;
+            this.usersService = usersService;
         }
 
-        [HttpGet("matches")]
-        public IActionResult GetLeaderboard()
+        [HttpGet("matches/{user}")]
+        public IActionResult GetFixtures(string user)
         {
-            var fixture = this.fixturesService.GetFixture();
+            var fixture = this.fixturesService.GetFixture(user);
             return Ok(fixture);
         }
+
     }
 }
