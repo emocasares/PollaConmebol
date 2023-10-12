@@ -113,9 +113,12 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user?.Identity?.IsAuthenticated == true)
         {
-            fixtures = await fixturesApiService.GetFixtures(user.Identity.Name);
+            if (user?.Identity?.Name != null)
+            {
+                fixtures = await fixturesApiService.GetFixtures(user.Identity.Name);
+            }
         }
     }
 
@@ -167,7 +170,7 @@
                 MatchId = model.Id,
                 HomeTeamScore = model.HomeTeamPredictedScore,
                 AwayTeamScore = model.AwayTeamPredictedScore,
-                UserId = UserState.UserId.Value
+                UserId = UserState?.UserId ?? 0
             };
 
         if (await predictionApiService.SavePredictionsAsync(prediction))

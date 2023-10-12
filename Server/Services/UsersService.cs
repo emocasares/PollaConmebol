@@ -27,7 +27,7 @@ namespace PollaEngendrilClientHosted.Server.Services
         public int CreateUser(string username)
         {
             var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
-            if (user != null)
+            if (user == null)
             {
                 dbContext.Users.Add(new Shared.Models.Entity.User() { Email = username });
                 dbContext.SaveChanges();
