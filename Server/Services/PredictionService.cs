@@ -61,7 +61,7 @@ namespace PollaEngendrilClientHosted.Server.Services
 
         public async Task SavePrediction(PredictionRequestDTO prediction)
         {
-            var currentPrediction = dbContext.Predictions.FirstOrDefault(u => u.MatchId == prediction.MatchId);
+            var currentPrediction = dbContext.Predictions.FirstOrDefault(u => u.MatchId == prediction.MatchId && u.UserId == prediction.UserId);
 
             if (currentPrediction == null)
             {
