@@ -50,9 +50,10 @@ namespace PollaEngendrilClientHosted.Client.Services
             return 0;
         }
 
-        public async Task<List<FixtureViewModel>> GetOthersPredictionsAsync(int matchId, int userId)
+        public async Task<List<OtherUserPredictionViewModel>> GetOthersPredictionsAsync(int matchId, int userId)
         {
-            List<FixtureViewModel> resultsFromOtherPlayers = new List<FixtureViewModel>();
+            List<OtherUserPredictionViewModel> resultsFromOtherPlayers = new();
+
             return resultsFromOtherPlayers;
         }
     }

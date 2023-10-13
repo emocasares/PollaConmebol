@@ -6,12 +6,29 @@
 
 @if (ShowPredictions)
 {
-    <MudCard><span>Aquí debes poder ver los pronósticos de los otros usarios para este partido</span></MudCard>
-    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Marcador Predicho</th>
+                <th>Puntos Obtenidos</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var prediction in otherPredictions)
+            {
+                <tr>
+                    <td>@prediction.UserName</td>
+                    <td>@prediction.HomeTeamPredictedScore - @prediction.AwayTeamPredictedScore</td>
+                    <td>@prediction.PointsObtained</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {
-    private List<FixtureViewModel> otherPredictions;
+    private List<OtherUserPredictionViewModel> otherPredictions;
 
     [Parameter]
     public int MatchId { get; set; }
