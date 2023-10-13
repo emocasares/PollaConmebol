@@ -18,22 +18,23 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudContainer>
-            <MudCard>
-                <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
-                    <HeaderContent>
-                        <MudTh>Posición</MudTh>
-                        <MudTh>Usuario</MudTh>
-                        <MudTh>Puntos</MudTh>
-                    </HeaderContent>
-                    <RowTemplate Context="player">
-                        <MudTd>@player.Position</MudTd>
-                        <MudTd>@player.Name</MudTd>
-                        <MudTd>@player.Score</MudTd>
-                    </RowTemplate>
-                </MudTable>
-            </MudCard>
-        </MudContainer>
+        <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
+            <ColGroup>
+                <col />
+                <col Class="clm-row-small" />
+                <col />
+            </ColGroup>
+            <HeaderContent>
+                <MudTh>#</MudTh>
+                <MudTh Class="clm-row-small">Usuario</MudTh>
+                <MudTh>Puntos</MudTh>
+            </HeaderContent>
+            <RowTemplate Context="player">
+                <MudTd>@player.Position</MudTd>
+                <MudTd Class="clm-row-small">@player.Name</MudTd>
+                <MudTd>@player.Score</MudTd>
+            </RowTemplate>
+        </MudTable>
     </Authorized>
     <NotAuthorized>
         <a href="authentication/login" class="login-logout">Log in</a>
