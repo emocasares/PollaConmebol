@@ -24,8 +24,6 @@ namespace PollaEngendrilClientHosted.Client.Services
             }
             catch (Exception ex)
             {
-                // Manejo de errores
-                // Puedes lanzar una excepción personalizada o hacer lo que consideres adecuado.
                 throw;
             }
         }
@@ -49,7 +47,13 @@ namespace PollaEngendrilClientHosted.Client.Services
                 return result.Points;
             }
 
-            return 0; // Handle error or failure case
+            return 0;
+        }
+
+        public async Task<List<FixtureViewModel>> GetOthersPredictionsAsync(int matchId, int userId)
+        {
+            List<FixtureViewModel> resultsFromOtherPlayers = new List<FixtureViewModel>();
+            return resultsFromOtherPlayers;
         }
     }
 }

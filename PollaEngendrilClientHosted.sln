@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1C921813-2E5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D33CF38D-6969-41CF-9605-4C70FB8832CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollaEngendril.Tests", "PollaEngendril.Tests\PollaEngendril.Tests.csproj", "{5D61DF3F-CD42-49C4-A785-A2203A2C480E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PollaEngendril.Tests", "PollaEngendril.Tests\PollaEngendril.Tests.csproj", "{5D61DF3F-CD42-49C4-A785-A2203A2C480E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scrapping", "scrapping", "{A54BB0AD-5D14-4024-866C-5D8A4E722018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrappingResultadosEliminatorias", "ScrappingResultadosEliminatorias\ScrappingResultadosEliminatorias.csproj", "{A8838C0B-04FB-4886-BB47-09389D6FF841}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrappingResultadosEliminatorias", "ScrappingResultadosEliminatorias\ScrappingResultadosEliminatorias.csproj", "{A8838C0B-04FB-4886-BB47-09389D6FF841}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

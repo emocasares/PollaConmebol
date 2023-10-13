@@ -13,7 +13,7 @@ namespace PollaEngendrilClientHosted.Server.Services
         public List<FixtureViewModel> GetFixture(string username)
         {
             var matches = dbContext.Matches.ToList();
-            var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
+            var user = dbContext.Users.FirstOrDefault(u => u.UserName == username);
             var predictions = dbContext.Predictions.Where(u => u.UserId == user.Id).ToList();
             var fixtures = matches.Select(match =>
             {

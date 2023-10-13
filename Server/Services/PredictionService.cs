@@ -57,9 +57,9 @@ namespace PollaEngendrilClientHosted.Server.Services
             var sortedLeaderboard = userPoints.OrderByDescending(kvp => kvp.Value)
                                               .Select((kvp, index) => new PlayerLeaderboardViewModel
                                               {
-                                                    Position = index + 1,
-                                                    Name = kvp.Key.Email,
-                                                    Score = kvp.Value
+                                                  Position = index + 1,
+                                                  Name = kvp.Key.UserName,
+                                                  Score = kvp.Value
                                               }).ToList();
             return sortedLeaderboard;
         }

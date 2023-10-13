@@ -2,6 +2,8 @@
 @using PollaEngendrilClientHosted.Client.State;
 @using PollaEngendrilClientHosted.Shared.Models.DTO;
 @using PollaEngendrilClientHosted.Shared.Models.ViewModel;
+@using MudBlazor
+
 @attribute [Authorize]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IFixturesApiService fixturesApiService
@@ -56,6 +58,18 @@
                             {
                                 <MudButton Variant="Variant.Filled" @onclick="async () => await ValidateAndSave(fixture)">Grabar pronóstico</MudButton>
                             }
+
+                            <MudToggleIconButton 
+                                Color="Color.Primary" 
+                                Icon="@Icons.Material.Filled.RemoveRedEye" 
+                                ToggledIcon="@Icons.Material.Filled.RemoveRedEye" 
+                                Title="Otros Pronósticos"
+                                ToggledTitle="Ocultar"
+                                ToggledChanged="newValue => ToggleExpansion(fixture, newValue)"
+                                />
+
+                                <OtherPlayersPredictions MatchId="fixture.Id" ShowPredictions="fixture.ShowOtherPredictions"/>
+
                         </div>
                     }
                 }
@@ -67,7 +81,7 @@
                 }
             </div>
         </div>
-
+            
     </Authorized>
     <NotAuthorized>
         <NoAuthorizedComponent></NoAuthorizedComponent>
@@ -87,12 +101,19 @@
         return fixture.AwayTeamRealScore.HasValue || fixture.IsLocked;
     }
 
+    private void ToggleExpansion(FixtureViewModel fixture, bool newValue)
+    {
+        fixture.ShowOtherPredictions = newValue;
+        // Forzar la actualización del componente actual
+        StateHasChanged();
+    }
+
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user?.Identity?.IsAuthenticated == true)
         {
             if (!UserState.UserId.HasValue)
             {

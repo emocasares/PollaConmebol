@@ -1,0 +1,33 @@
+﻿@using PollaEngendrilClientHosted.Client.Services;
+@using PollaEngendrilClientHosted.Client.State;
+@using PollaEngendrilClientHosted.Shared.Models.ViewModel;
+@inject IPredictionApiService predictionApiService
+@inject UserState UserState
+
+@if (ShowPredictions)
+{
+    <MudCard><span>Aquí debes poder ver los pronósticos de los otros usarios para este partido</span></MudCard>
+    
+}
+
+@code {
+    private List<FixtureViewModel> otherPredictions;
+
+    [Parameter]
+    public int MatchId { get; set; }
+
+    [Parameter]
+    public bool ShowPredictions { get; set; }
+
+    private async Task LoadOtherPredictions()
+    {
+        if (otherPredictions is null)
+            otherPredictions = await predictionApiService.GetOthersPredictionsAsync(MatchId, UserState.UserId.Value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadOtherPredictions();
+    }
+
+}

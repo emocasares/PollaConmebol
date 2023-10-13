@@ -12,7 +12,7 @@ namespace PollaEngendrilClientHosted.Server.Services
 
         public int GetUserIdByUsername(string username)
         {
-            var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
+            var user = dbContext.Users.FirstOrDefault(u => u.UserName == username);
 
             if (user != null)
             {
@@ -26,12 +26,12 @@ namespace PollaEngendrilClientHosted.Server.Services
 
         public int CreateUser(string username)
         {
-            var user = dbContext.Users.FirstOrDefault(u => u.Email == username);
+            var user = dbContext.Users.FirstOrDefault(u => u.UserName == username);
             if (user == null)
             {
-                dbContext.Users.Add(new Shared.Models.Entity.User() { Email = username });
+                dbContext.Users.Add(new Shared.Models.Entity.User() { UserName = username });
                 dbContext.SaveChanges();
-                user = dbContext.Users.FirstOrDefault(u => u.Email == username);
+                user = dbContext.Users.FirstOrDefault(u => u.UserName == username);
             }
             return user.Id;
         }

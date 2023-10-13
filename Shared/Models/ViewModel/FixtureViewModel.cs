@@ -17,4 +17,5 @@ public class FixtureViewModel
     public bool IsLocked { get; set; } = false;
     public bool IsHomeScoreInvalid { get; set; } = false;
     public bool IsAwayScoreInvalid { get; set; } = false;
+    public bool ShowOtherPredictions { get; set; } = false;
 }
