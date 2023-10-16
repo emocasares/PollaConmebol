@@ -6,25 +6,18 @@
 
 @if (ShowPredictions)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Marcador Predicho</th>
-                <th>Puntos Obtenidos</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var prediction in otherPredictions)
-            {
-                <tr>
-                    <td>@prediction.UserName</td>
-                    <td>@prediction.HomeTeamPredictedScore - @prediction.AwayTeamPredictedScore</td>
-                    <td>@prediction.PointsObtained</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MudTable T="OtherUserPredictionViewModel" Items="otherPredictions" Breakpoint="Breakpoint.None">
+        <HeaderContent>
+            <MudTh Width="15%">Usuario</MudTh>
+            <MudTh Width="30%">Marcador Predicho</MudTh>
+            <MudTh Width="15%">Puntos Obtenidos</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Usuario" Class="mud-col-md-4">@context.UserName</MudTd>
+            <MudTd DataLabel="Marcador Predicho" Class="mud-col-md-4">@($"{context.HomeTeamPredictedScore} - {context.AwayTeamPredictedScore}")</MudTd>
+            <MudTd DataLabel="Puntos Obtenidos" Class="mud-col-md-4">@context.PointsObtained</MudTd>
+        </RowTemplate>
+    </MudTable>
 }
 
 @code {

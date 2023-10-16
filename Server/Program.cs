@@ -41,8 +41,11 @@ public class Program
         builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<IPredictionStrategy, ExactScorePredictionStrategy>();
         builder.Services.AddScoped<IPredictionStrategy, WinnerOrTiePredictionStrategy>();
+#if DEBUG
+        builder.Services.AddScoped<IUserEligibleSpecification, UserEligibleSpecificationAlwaysTrue>();
+#else
         builder.Services.AddScoped<IUserEligibleSpecification, UserEligibleByEmailPatternSpecification>();
-
+#endif
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
