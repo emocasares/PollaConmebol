@@ -10,6 +10,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <RemoteAuthenticatorView Action="@Action">
+    <LoggingIn>
+        <div class="alert alert-info" style="padding: 20px;" role="alert">@RedirectingToLoginPage</div>
+    </LoggingIn>
     <LogOut>
         @{
             var authority = (string)Configuration["Auth0:Authority"];
@@ -37,4 +40,6 @@
 @code{
     [Parameter] 
     public string Action { get; set; }
+
+    string RedirectingToLoginPage = "Redirigiendo a la página de login.";
 }

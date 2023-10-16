@@ -33,7 +33,7 @@ builder.Services.AddAuth0OidcAuthentication(options =>
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
-    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.PreventDuplicates = true;
     config.SnackbarConfiguration.NewestOnTop = false;
     config.SnackbarConfiguration.ShowCloseIcon = true;
     config.SnackbarConfiguration.VisibleStateDuration = 2000;

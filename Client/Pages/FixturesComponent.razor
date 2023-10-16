@@ -13,6 +13,7 @@
 @inject ISnackbar Snackbar
 
 <MudSnackbarProvider />
+<MudContainer>
 <AuthorizeView>
     <Authorized>
         <PageTitle>Pronósticos</PageTitle>
@@ -36,17 +37,20 @@
                             <img src="@fixture.HomeTeamFlag" alt="Bandera de @fixture.HomeTeam" title="@fixture.HomeTeam">
                             <img src="@fixture.AwayTeamFlag" alt="Bandera de @fixture.AwayTeam" title="@fixture.AwayTeam">
                             </div>
-                                <input type="number" id="homeScore@fixture.Id"
-                                       placeholder=""
-                                        @bind="@fixture.HomeTeamPredictedScore"
-                                       disabled="@IsInputDisabled(fixture, isHome: true)"
-                                       class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "")">
+                            <input type="number" id='@($"homeScore{fixture.Id}")'
+                               placeholder=""
+                               @bind="@fixture.HomeTeamPredictedScore"
+                               disabled="@IsInputDisabled(fixture, isHome: true)"
+                                           class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
+                                    @onblur="async () => await ValidateAndSave(fixture)" />
 
-                                <input type="number" id="awayScore@fixture.Id" 
-                                       placeholder=""
-                                       @bind="@fixture.AwayTeamPredictedScore"
-                                       disabled="@IsInputDisabled(fixture, isHome: false)"
-                                       class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "")">
+
+                                    <input type="number" id='@($"awayScore{fixture.Id}")'
+                                           placeholder=""
+                                    @bind="@fixture.AwayTeamPredictedScore"
+                                           disabled="@IsInputDisabled(fixture, isHome: false)"
+                                           class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border green-border-success" : "")"
+                                    @onblur="async () => await ValidateAndSave(fixture)" />
 
                             </div>
                             <!-- Resultado Real -->
@@ -54,10 +58,6 @@
                                 <input type="number" id="real-score1" placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
                                 <input type="number" id="real-score2" placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
                             </div>
-                            @if (!fixture.HomeTeamRealScore.HasValue)
-                            {
-                                <MudButton Variant="Variant.Filled" @onclick="async () => await ValidateAndSave(fixture)">Grabar pronóstico</MudButton>
-                            }
 
                             <MudToggleIconButton 
                                 Color="Color.Primary" 
@@ -84,128 +84,8 @@
             
     </Authorized>
     <NotAuthorized>
-        <NoAuthorizedComponent></NoAuthorizedComponent>
+        <NoAuthorizedComponent />
     </NotAuthorized>
 </AuthorizeView>
+</MudContainer>
 
-@code {
-
-    private IEnumerable<FixtureViewModel> fixtures;
-
-    bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
-    {
-        if (isHome)
-        {
-            return fixture.HomeTeamRealScore.HasValue || fixture.IsLocked;
-        }
-        return fixture.AwayTeamRealScore.HasValue || fixture.IsLocked;
-    }
-
-    private void ToggleExpansion(FixtureViewModel fixture, bool newValue)
-    {
-        fixture.ShowOtherPredictions = newValue;
-        StateHasChanged();
-    }
-
-    private async Task GetUserId()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user?.Identity?.IsAuthenticated == true)
-        {
-            if (!UserState.UserId.HasValue)
-            {
-                var userName = user.Identity.Name;
-                var userId = await usersApiService.GetUserIdByUserName(userName);
-                if (userId == -1)
-                {
-                    userId = await usersApiService.CreateUser(userName);
-                }
-                UserState.UserId = userId;
-            }
-        }
-    }
-
-
-    private async Task LoadFixtures()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
-        if (user?.Identity?.IsAuthenticated == true)
-        {
-            if (user?.Identity?.Name != null)
-            {
-                fixtures = await fixturesApiService.GetFixtures(user.Identity.Name);
-            }
-        }
-    }
-
-    private bool ValidateScoreInput(FixtureViewModel model, int? score, bool isHome)
-    {
-        if (!score.HasValue)
-        {
-            if (isHome)
-            {
-                model.IsHomeScoreInvalid = false;
-            }
-            else
-            {
-                model.IsAwayScoreInvalid = false;
-            }
-            return false;
-        }
-
-        if (isHome)
-        {
-            model.IsHomeScoreInvalid = true;
-        }
-        else
-        {
-            model.IsAwayScoreInvalid = true;
-        }
-
-        return true;
-    }
-
-    private async Task ValidateAndSave(FixtureViewModel fixture)
-    {
-        var isHomeScoreValid = ValidateScoreInput(fixture, fixture.HomeTeamPredictedScore, true);
-        var isAwayScoreValid = ValidateScoreInput(fixture, fixture.AwayTeamPredictedScore, false);
-
-        fixture.IsHomeScoreInvalid = !isHomeScoreValid;
-        fixture.IsAwayScoreInvalid = !isAwayScoreValid;
-
-        if (isHomeScoreValid && isAwayScoreValid)
-        {
-            await SavePredictionsAsync(fixture);
-        }
-    }
-
-    private async Task SavePredictionsAsync(FixtureViewModel model)
-    {
-        var prediction = new PredictionRequestDTO
-            {
-                MatchId = model.Id,
-                HomeTeamScore = model.HomeTeamPredictedScore,
-                AwayTeamScore = model.AwayTeamPredictedScore,
-                UserId = UserState?.UserId ?? 0
-            };
-
-        if (await predictionApiService.SavePredictionsAsync(prediction))
-        {
-            Snackbar.Add("Se grabó!", Severity.Success);
-        }
-        else
-        {
-            Snackbar.Add("No se grabó!", Severity.Error);
-        }
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetUserId();
-        await LoadFixtures();
-    }
-}

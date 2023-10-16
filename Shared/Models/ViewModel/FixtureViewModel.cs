@@ -18,4 +18,5 @@ public class FixtureViewModel
     public bool IsHomeScoreInvalid { get; set; } = false;
     public bool IsAwayScoreInvalid { get; set; } = false;
     public bool ShowOtherPredictions { get; set; } = false;
+    public bool MustShowSavedSuccesfully { get; set; }
 }

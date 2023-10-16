@@ -1,5 +1,6 @@
 ﻿.content {
     text-align: center;
+    padding-top: 20px;
 }
 
 .matches {
@@ -48,11 +49,19 @@ button:disabled {
 }
 
 .pronostico, .real-score {
-    margin-bottom: 10px; /* Espaciado de 10px entre las filas internas */
+    margin-bottom: 10px;
 }
 
 .is-invalid {
     border-color: red;
     background-color: #f2dede;
     color: #a94442;
+}
+
+.green-border {
+    transition: border 0.3s;
+}
+
+.green-border-success {
+    border: 1px solid green !important;
 }
