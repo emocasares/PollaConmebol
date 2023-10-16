@@ -7,6 +7,7 @@ using PollaEngendrilClientHosted.Shared.Models.DTO;
 using PollaEngendrilClientHosted.Shared.Models.Entity;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 using System.Linq;
+using System.Reflection;
 
 namespace PollaEngendrilClientHosted.Server.Services
 {
@@ -17,12 +18,16 @@ namespace PollaEngendrilClientHosted.Server.Services
         private readonly IPredictionStrategy winnerOrTiePredictionStrategy;
         private readonly IUserEligibleSpecification userEligibleSpecification;
 
-        public PredictionService(IPredictionStrategy exactScorePredictionStrategy, IPredictionStrategy winnerOrTiePredictionStrategy, IUserEligibleSpecification userSpecification, ApplicationDbContext dbContext)
+        public PredictionService(IEnumerable<IPredictionStrategy> predictionStrategies, IUserEligibleSpecification userSpecification, ApplicationDbContext dbContext)
         {
-            this.exactScorePredictionStrategy = exactScorePredictionStrategy;
-            this.winnerOrTiePredictionStrategy = winnerOrTiePredictionStrategy;
-            this.dbContext = dbContext;
+            this.exactScorePredictionStrategy = predictionStrategies?
+                        .FirstOrDefault(s => s.GetType().GetCustomAttribute<StrategyNameAttribute>()?.Name == "ExactScore");
+
+            this.winnerOrTiePredictionStrategy = predictionStrategies?
+                .FirstOrDefault(s => s.GetType().GetCustomAttribute<StrategyNameAttribute>()?.Name == "WinnerOrTie");
+
             this.userEligibleSpecification = userSpecification;
+            this.dbContext = dbContext;
         }
 
         public List<PlayerLeaderboardViewModel> CalculateLeaderboard()
@@ -92,8 +97,11 @@ namespace PollaEngendrilClientHosted.Server.Services
                 throw new ArgumentException("Scores cannot be negative.");
             }
 
+            var pointsOriginalValue = points;
             points += exactScorePredictionStrategy.CalculatePoints(actualResult, predictedResult);
-            points += winnerOrTiePredictionStrategy.CalculatePoints(actualResult, predictedResult);
+
+            if (points == pointsOriginalValue)
+                points += winnerOrTiePredictionStrategy.CalculatePoints(actualResult, predictedResult);
 
             var response = new PredictionResponseDTO
             {

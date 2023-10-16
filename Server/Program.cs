@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PollaEngendrilClientHosted.Server.Services;
 using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
 using Microsoft.EntityFrameworkCore;
 using PollaEngendrilClientHosted.Server.Data;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using PollaEngendrilClientHosted.Server.Services.UserEligibleSpecification;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PollaEngendrilClientHosted.Server;
 public class Program

@@ -41,6 +41,11 @@ namespace PollaEngendrilClientHosted.Client.Pages
                 if (!UserState.UserId.HasValue)
                 {
                     var userName = user.Identity.Name;
+                    //userName = "A. Casares";
+                    //userName = "Juan Pablo Aliaga";
+                    //userName = "Miguel S. Cartagenova M.";
+                    //userName = "sebasaliaga2515@gmail.com";
+                    //userName = "Rafael Weisson";
                     var userId = await usersApiService.GetUserIdByUserName(userName);
                     if (userId == -1)
                     {

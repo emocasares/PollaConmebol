@@ -3,6 +3,7 @@ using PollaEngendrilClientHosted.Shared.Models.DTO;
 
 namespace PollaEngendrilClientHosted.Server.Services.ScoringStaregies
 {
+    [StrategyName("ExactScore")]
     public class ExactScorePredictionStrategy : IPredictionStrategy
     {
         public int CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)

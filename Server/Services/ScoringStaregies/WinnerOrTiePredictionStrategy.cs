@@ -3,6 +3,7 @@ using PollaEngendrilClientHosted.Shared.Models.DTO;
 
 namespace PollaEngendrilClientHosted.Server.Services.ScoringStaregies
 {
+    [StrategyName("WinnerOrTie")]
     public class WinnerOrTiePredictionStrategy : IPredictionStrategy
     {
         public int CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)
@@ -14,8 +15,8 @@ namespace PollaEngendrilClientHosted.Server.Services.ScoringStaregies
             bool actualIsTie = actualResult.HomeTeamScore == actualResult.AwayTeamScore;
             bool predictedIsTie = predictedResult.HomeTeamScore == predictedResult.AwayTeamScore;
 
-            if ((actualHomeTeamWins == predictedHomeTeamWins) ||
-                (actualAwayTeamWins == predictedAwayTeamWins) ||
+            if ( (actualHomeTeamWins == predictedHomeTeamWins &&
+                actualAwayTeamWins == predictedAwayTeamWins) ||
                 (actualIsTie && predictedIsTie))
             {
                 return 3;
