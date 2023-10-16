@@ -52,9 +52,11 @@ namespace PollaEngendrilClientHosted.Client.Services
 
         public async Task<List<OtherUserPredictionViewModel>> GetOthersPredictionsAsync(int matchId, int userId)
         {
-            List<OtherUserPredictionViewModel> resultsFromOtherPlayers = new();
+            var response = await _httpClient.GetAsync($"api/predictions/otherspredictions/{matchId}/{userId}");
+            response.EnsureSuccessStatusCode();
+            var resulstsFromOtherPlayers = await response.Content.ReadFromJsonAsync<List<OtherUserPredictionViewModel>>();
 
-            return resultsFromOtherPlayers;
+            return resulstsFromOtherPlayers;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PollaEngendrilClientHosted.Server.Data;
 using PollaEngendrilClientHosted.Server.Services.ScoringStaregies;
+using PollaEngendrilClientHosted.Server.Services.UserEligibleSpecification;
 using PollaEngendrilClientHosted.Shared;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
 using PollaEngendrilClientHosted.Shared.Models.Entity;
@@ -14,12 +15,14 @@ namespace PollaEngendrilClientHosted.Server.Services
         private readonly ApplicationDbContext dbContext;
         private readonly IPredictionStrategy exactScorePredictionStrategy;
         private readonly IPredictionStrategy winnerOrTiePredictionStrategy;
+        private readonly IUserEligibleSpecification userEligibleSpecification;
 
-        public PredictionService(IPredictionStrategy exactScorePredictionStrategy, IPredictionStrategy winnerOrTiePredictionStrategy, ApplicationDbContext dbContext)
+        public PredictionService(IPredictionStrategy exactScorePredictionStrategy, IPredictionStrategy winnerOrTiePredictionStrategy, IUserEligibleSpecification userSpecification, ApplicationDbContext dbContext)
         {
             this.exactScorePredictionStrategy = exactScorePredictionStrategy;
             this.winnerOrTiePredictionStrategy = winnerOrTiePredictionStrategy;
             this.dbContext = dbContext;
+            this.userEligibleSpecification = userSpecification;
         }
 
         public List<PlayerLeaderboardViewModel> CalculateLeaderboard()
@@ -29,9 +32,9 @@ namespace PollaEngendrilClientHosted.Server.Services
                 .Where(p => dbContext.Matches
                     .Any(m => m.Id == p.MatchId && m.HomeTeamScore.HasValue && m.AwayTeamScore.HasValue))
                 .ToList();
-            var users = dbContext.Users.ToList();
+            var users = dbContext.Users.Where(this.userEligibleSpecification.IsSatisfiedBy).ToList();
             var userPoints = new Dictionary<Shared.Models.Entity.User, int>();
-            foreach (var prediction in predictions)
+            foreach (var prediction in predictions.Where(p => users.Any(u => u.Id == p.UserId)))
             {
                 var actualMatch = actualMatches.FirstOrDefault(m => m.Id == prediction.MatchId);
                 var actualResult = new MatchResult() { HomeTeamScore = actualMatch.HomeTeamScore.Value, AwayTeamScore = actualMatch.AwayTeamScore.Value };
@@ -44,13 +47,16 @@ namespace PollaEngendrilClientHosted.Server.Services
                 var points = CalculatePoints(actualResult, predictedResult).Points;
                 var user = users.FirstOrDefault(u => u.Id == prediction.UserId);
 
-                if (userPoints.ContainsKey(user))
+                if (user is not null)
                 {
-                    userPoints[user] += points;
-                }
-                else
-                {
-                    userPoints[user] = points;
+                    if (userPoints.ContainsKey(user))
+                    {
+                        userPoints[user] += points;
+                    }
+                    else
+                    {
+                        userPoints[user] = points;
+                    }
                 }
             }
 
@@ -67,6 +73,13 @@ namespace PollaEngendrilClientHosted.Server.Services
         public PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)
         {
             int points = 0;
+            if (!actualResult.AwayTeamScore.HasValue || !actualResult.HomeTeamScore.HasValue)
+            {
+                return new PredictionResponseDTO
+                {
+                    Points = 0
+                };
+            }
 
             if (actualResult == null || predictedResult == null)
             {
@@ -88,6 +101,54 @@ namespace PollaEngendrilClientHosted.Server.Services
             };
 
             return response;
+        }
+
+        public List<OtherUserPredictionViewModel> GetOthersPredictions(int matchId, int userId)
+        {
+            var eligibleUsers = dbContext.Users
+                .Where(userEligibleSpecification.IsSatisfiedBy)
+                .ToList();
+
+            var predictions = dbContext.Predictions
+                            .Where(prediction =>
+                                    eligibleUsers
+                                    .Select(user => user.Id)
+                                    .Contains(prediction.UserId) &&
+                                    prediction.MatchId == matchId &&
+                                    prediction.UserId != userId)
+                            .ToList();
+
+            var otherPredictions = predictions.Select(prediction =>
+            {
+                var user = eligibleUsers.FirstOrDefault(u => u.Id == prediction.UserId);
+
+                var actualMatch = dbContext.Matches.FirstOrDefault(m => m.Id == matchId);
+                var actualResult = new MatchResult
+                {
+                    HomeTeamScore = actualMatch?.HomeTeamScore,
+                    AwayTeamScore = actualMatch?.AwayTeamScore,
+                };
+
+                var predictedResult = new PredictionRequestDTO
+                {
+                    HomeTeamScore = prediction?.HomeTeamScore,
+                    AwayTeamScore = prediction?.AwayTeamScore
+                };
+
+                var pointsObtained = CalculatePoints(actualResult, predictedResult).Points;
+
+                return new OtherUserPredictionViewModel
+                {
+                    MatchId = matchId,
+                    UserName = user?.UserName, 
+                    HomeTeamPredictedScore = prediction?.HomeTeamScore.Value,
+                    AwayTeamPredictedScore = prediction?.AwayTeamScore.Value,
+                    PointsObtained = pointsObtained
+                };
+            }).ToList();
+
+            return otherPredictions;
+
         }
 
         public async Task SavePrediction(PredictionRequestDTO prediction)

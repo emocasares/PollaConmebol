@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using PollaEngendrilClientHosted.Server.Data;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using PollaEngendrilClientHosted.Server.Services.UserEligibleSpecification;
 
 namespace PollaEngendrilClientHosted.Server;
 public class Program
@@ -37,9 +38,10 @@ public class Program
 
         builder.Services.AddScoped<IPredictionService, PredictionService>();
         builder.Services.AddScoped<IFixturesService, FixturesService>();
+        builder.Services.AddScoped<IUsersService, UsersService>();
         builder.Services.AddScoped<IPredictionStrategy, ExactScorePredictionStrategy>();
         builder.Services.AddScoped<IPredictionStrategy, WinnerOrTiePredictionStrategy>();
-        builder.Services.AddScoped<IUsersService, UsersService>();
+        builder.Services.AddScoped<IUserEligibleSpecification, UserEligibleByEmailPatternSpecification>();
 
         var app = builder.Build();
 

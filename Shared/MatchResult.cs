@@ -8,7 +8,7 @@ namespace PollaEngendrilClientHosted.Shared
 {
     public class MatchResult
     {
-        public int HomeTeamScore { get; set; }
-        public int AwayTeamScore { get; set; }
+        public int? HomeTeamScore { get; set; }
+        public int? AwayTeamScore { get; set; }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PollaEngendrilClientHosted.Server.Services;
 using PollaEngendrilClientHosted.Shared;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
+using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 
 namespace PollaEngendrilClientHosted.Server.Controllers
 {
@@ -58,6 +60,13 @@ namespace PollaEngendrilClientHosted.Server.Controllers
                 // Manejo de errores
                 return StatusCode(500, "Se ha producido un error al guardar la predicción: " + ex.Message);
             }
+        }
+
+        [HttpGet("otherspredictions/{matchId}/{userId}")]
+        public IActionResult GetOthersPredictions(int matchId, int userId)
+        {
+            var othersPredictions = predictionService.GetOthersPredictions(matchId, userId);
+            return Ok(othersPredictions);
         }
 
         private MatchResult GetActualMatchResult()

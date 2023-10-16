@@ -10,5 +10,6 @@ namespace PollaEngendrilClientHosted.Server.Services
         PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult);
         List<PlayerLeaderboardViewModel> CalculateLeaderboard();
         Task SavePrediction(PredictionRequestDTO newPrediction);
+        List<OtherUserPredictionViewModel> GetOthersPredictions(int matchId, int userId);
     }
 }
