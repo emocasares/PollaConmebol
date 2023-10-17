@@ -60,7 +60,8 @@
                                @bind="@fixture.HomeTeamPredictedScore"
                                disabled="@IsInputDisabled(fixture, isHome: true)"
                                            class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
-                                    @onblur="async () => await ValidateAndSave(fixture)" />
+                                    @onblur="async () => await ValidateAndSave(fixture)"
+                                    @oninput="ValidateNumber(fixture)" />
 
 
                                     <input type="number" id='@($"awayScore{fixture.Id}")'
@@ -68,7 +69,8 @@
                                     @bind="@fixture.AwayTeamPredictedScore"
                                            disabled="@IsInputDisabled(fixture, isHome: false)"
                                            class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border green-border-success" : "")"
-                                    @onblur="async () => await ValidateAndSave(fixture)" />
+                                    @onblur="async () => await ValidateAndSave(fixture)"
+                                    @oninput="ValidateAndSave(fixture)" />
 
                             </div>
                             <!-- Resultado Real -->
