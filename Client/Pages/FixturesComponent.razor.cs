@@ -6,6 +6,7 @@ using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 using System.Net.NetworkInformation;
 using System;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components;
 
 namespace PollaEngendrilClientHosted.Client.Pages
 {
@@ -100,18 +101,6 @@ namespace PollaEngendrilClientHosted.Client.Pages
             return true;
         }
 
-        private void ValidarNumber(FixtureViewModel fixture)
-        {
-            if (fixture.HomeTeamPredictedScore < 0)
-            {
-                fixture.HomeTeamPredictedScore = 0;
-            }
-
-            if (fixture.AwayTeamPredictedScore < 0)
-            {
-                fixture.AwayTeamPredictedScore = 0;
-            }
-        }
         private async Task ValidateAndSave(FixtureViewModel fixture)
         {
             var isHomeScoreValid = ValidateScoreInput(fixture, fixture.HomeTeamPredictedScore, true);
