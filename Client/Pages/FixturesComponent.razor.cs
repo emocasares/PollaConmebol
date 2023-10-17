@@ -1,9 +1,11 @@
-#define ALLOW_ENTER_ALL_RESULTS
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using PollaEngendrilClientHosted.Client.State;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
+using System.Net.NetworkInformation;
+using System;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace PollaEngendrilClientHosted.Client.Pages
 {
@@ -14,9 +16,8 @@ namespace PollaEngendrilClientHosted.Client.Pages
 
         bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
         {
-            #if ALLOW_ENTER_ALL_RESULTS
-            return false;
-            #endif
+            if (Env.IsDevelopment())
+                return false;
 
             if (isHome)
             {
@@ -46,6 +47,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
                     //userName = "Miguel S. Cartagenova M.";
                     //userName = "sebasaliaga2515@gmail.com";
                     //userName = "Rafael Weisson";
+                    //userName = "Javier Cañas";
                     var userId = await usersApiService.GetUserIdByUserName(userName);
                     if (userId == -1)
                     {
