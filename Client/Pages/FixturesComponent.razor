@@ -29,12 +29,24 @@
             </div>
 
             <div class="matches">
+                    <div class="totalPoints">Puntos
+                    <div class="rcircle">
+                        <div class="pointsObtained">27</div>
+                    </div>
+                    </div>
+
             @if (fixtures != null)
             {
                 @foreach (var fixture in fixtures)
                 {
                     <div class="match">
-                        <p>Fecha: @fixture.Date</p>
+                        @if (fixture.PointsObtained.HasValue)
+                        {
+                            <div class="rcircle">
+                                <div class="pointsObtained">@fixture?.PointsObtained</div>
+                            </div>
+                        }
+                            <p>Fecha: @fixture.Date</p>
                             <!-- Pronóstico -->
                             <div class="pronostico">
                             <div class="banderas">
@@ -44,7 +56,7 @@
                             <span>@fixture.AwayTeam</span>
                             </div>
                             <input type="number" id='@($"homeScore{fixture.Id}")'
-                               placeholder=""
+                               placeholder="" 
                                @bind="@fixture.HomeTeamPredictedScore"
                                disabled="@IsInputDisabled(fixture, isHome: true)"
                                            class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
@@ -61,8 +73,8 @@
                             </div>
                             <!-- Resultado Real -->
                             <div class="real-score">
-                                <input type="number" id="real-score1" placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
-                                <input type="number" id="real-score2" placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
+                                <input type="number" id='@($"realHomeScore{fixture.Id}")' placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
+                                <input type="number" id='@($"realAwayScore{fixture.Id}")' placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
                             </div>
 
                             <MudToggleIconButton 
@@ -75,8 +87,7 @@
                                 />
 
                                 <OtherPlayersPredictions MatchId="fixture.Id" ShowPredictions="fixture.ShowOtherPredictions"/>
-
-                        </div>
+                            </div>
                     }
                 }
                 else

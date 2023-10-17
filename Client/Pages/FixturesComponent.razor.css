@@ -65,3 +65,35 @@ button:disabled {
 .green-border-success {
     border: 1px solid green !important;
 }
+
+.rcircle {
+    width: 40px;
+    border-radius: 50%;
+    background: orange;
+    line-height: 0;
+    position: relative;
+}
+
+.rcircle::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.rcircle .pointsObtained {
+    position: absolute;
+    bottom: 50%;
+    width: 100%;
+    text-align: center;
+    font-family: Roboto;
+    font-weight: 700;
+    color: white;
+    font-size: 24px;
+}
+
+.totalPoints {
+    position: relative;
+    top: -70px;
+    left: 0;
+    float: right;
+}

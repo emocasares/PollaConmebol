@@ -19,4 +19,5 @@ public class FixtureViewModel
     public bool IsAwayScoreInvalid { get; set; } = false;
     public bool ShowOtherPredictions { get; set; } = false;
     public bool MustShowSavedSuccesfully { get; set; }
+    public int? PointsObtained { get; set; }
 }

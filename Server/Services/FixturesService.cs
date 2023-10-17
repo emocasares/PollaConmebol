@@ -1,4 +1,5 @@
 ﻿using PollaEngendrilClientHosted.Server.Data;
+using PollaEngendrilClientHosted.Shared.Models.DTO;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 
 namespace PollaEngendrilClientHosted.Server.Services
@@ -6,8 +7,10 @@ namespace PollaEngendrilClientHosted.Server.Services
     public class FixturesService : IFixturesService
     {
         private readonly ApplicationDbContext dbContext;
-        public FixturesService(ApplicationDbContext context)
+        private readonly IPredictionService predictionService;
+        public FixturesService(ApplicationDbContext context, IPredictionService predictionService)
         {
+            this.predictionService = predictionService;
             this.dbContext = context;
         }
         public List<FixtureViewModel> GetFixture(string username)
@@ -18,6 +21,10 @@ namespace PollaEngendrilClientHosted.Server.Services
             var fixtures = matches.Select(match =>
             {
                 var prediction = user != null ? predictions.FirstOrDefault(p => p.MatchId == match.Id) : null;
+            
+                var pointsObtained = predictionService
+                .CalculatePoints(new Shared.MatchResult{ AwayTeamScore = match?.AwayTeamScore, HomeTeamScore = match?.HomeTeamScore, },
+                new PredictionRequestDTO { HomeTeamScore = prediction?.HomeTeamScore, AwayTeamScore = prediction?.AwayTeamScore }).Points;
                 return new FixtureViewModel
                 {
                     Id = match.Id,
@@ -30,7 +37,8 @@ namespace PollaEngendrilClientHosted.Server.Services
                     AwayTeamFlag = match.AwayTeamFlag,
                     AwayTeamPredictedScore = prediction?.AwayTeamScore,
                     AwayTeamRealScore = match.AwayTeamScore,
-                    User = username
+                    User = username,
+                    PointsObtained = pointsObtained
                 };
             }).ToList();
             return fixtures;
