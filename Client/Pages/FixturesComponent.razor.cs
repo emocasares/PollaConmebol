@@ -6,7 +6,7 @@ using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 using System.Net.NetworkInformation;
 using System;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace PollaEngendrilClientHosted.Client.Pages
 {
@@ -14,6 +14,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
     {
 
         private IEnumerable<FixtureViewModel> fixtures;
+        private bool javascriptInitialized = false;
 
         bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
         {
@@ -74,6 +75,22 @@ namespace PollaEngendrilClientHosted.Client.Pages
             }
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (fixtures != null)
+            {
+                foreach (var fixture in fixtures)
+                {
+                    if (!fixture.HomeTeamRealScore.HasValue)
+                    {
+                        await JSRuntime.InvokeVoidAsync("scrollToElement", $"homeScore{fixture.Id}");
+                        break;
+                    }
+                }
+            }
+
+            await base.OnAfterRenderAsync(firstRender);
+        }
         private bool ValidateScoreInput(FixtureViewModel model, int? score, bool isHome)
         {
             if (!score.HasValue || score < 0)

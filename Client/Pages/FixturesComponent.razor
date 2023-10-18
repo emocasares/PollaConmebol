@@ -14,7 +14,7 @@
 @inject UserState UserState
 @inject ISnackbar Snackbar
 @inject IWebAssemblyHostEnvironment Env
-
+@inject IJSRuntime JSRuntime
 
 <MudSnackbarProvider />
 <MudContainer>
@@ -55,19 +55,19 @@
                             <img src="@fixture.AwayTeamFlag" alt="Bandera de @fixture.AwayTeam" title="@fixture.AwayTeam">
                             <span>@fixture.AwayTeam</span>
                             </div>
+
                             <input type="number" id='@($"homeScore{fixture.Id}")'
-                               placeholder="" 
-                               @bind="@fixture.HomeTeamPredictedScore"
-                               disabled="@IsInputDisabled(fixture, isHome: true)"
-                                           class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
+                                    placeholder="" 
+                                    @bind="@fixture.HomeTeamPredictedScore"
+                                    disabled="@IsInputDisabled(fixture, isHome: true)"
+                                    class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
                                     @onblur="async () => await ValidateAndSave(fixture)" />
 
-
-                                    <input type="number" id='@($"awayScore{fixture.Id}")'
-                                           placeholder=""
+                            <input type="number" id='@($"awayScore{fixture.Id}")'
+                                    placeholder=""
                                     @bind="@fixture.AwayTeamPredictedScore"
-                                           disabled="@IsInputDisabled(fixture, isHome: false)"
-                                           class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border green-border-success" : "")"
+                                    disabled="@IsInputDisabled(fixture, isHome: false)"
+                                    class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border green-border-success" : "")"
                                     @onblur="async () => await ValidateAndSave(fixture)" />
 
                             </div>
