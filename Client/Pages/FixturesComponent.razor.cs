@@ -76,7 +76,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
 
         private bool ValidateScoreInput(FixtureViewModel model, int? score, bool isHome)
         {
-            if (!score.HasValue || !int.TryParse(score.Value.ToString(), out int _result ))
+            if (!score.HasValue || score < 0)
             {
                 if (isHome)
                 {
