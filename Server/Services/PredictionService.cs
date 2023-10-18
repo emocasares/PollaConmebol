@@ -91,12 +91,6 @@ namespace PollaEngendrilClientHosted.Server.Services
                 throw new ArgumentNullException("Match results cannot be null.");
             }
 
-            if (actualResult.HomeTeamScore < 0 || actualResult.AwayTeamScore < 0 ||
-                predictedResult.HomeTeamScore < 0 || predictedResult.AwayTeamScore < 0)
-            {
-                throw new ArgumentException("Scores cannot be negative.");
-            }
-
             var pointsOriginalValue = points;
             points += exactScorePredictionStrategy.CalculatePoints(actualResult, predictedResult);
 
