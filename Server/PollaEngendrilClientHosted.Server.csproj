@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\**" />
+    <Compile Remove="Models\**" />
+    <Content Remove="Data\Migrations\**" />
+    <Content Remove="Models\**" />
+    <EmbeddedResource Remove="Data\Migrations\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Data\Migrations\**" />
+    <None Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0" />
@@ -19,12 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Client\PollaEngendrilClientHosted.Client.csproj" />
     <ProjectReference Include="..\Shared\PollaEngendrilClientHosted.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Models\Entity\" />
-    <Folder Include="Models\DTO\" />
   </ItemGroup>
 
 
