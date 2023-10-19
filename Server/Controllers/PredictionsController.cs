@@ -69,6 +69,14 @@ namespace PollaEngendrilClientHosted.Server.Controllers
             return Ok(othersPredictions);
         }
 
+        [HttpGet("allpredictions")]
+        public async Task<IActionResult> GetAllPredictions()
+        {
+            var othersPredictions = await predictionService.GetAllPredictions();
+            return Ok(othersPredictions);
+        }
+
+
         private MatchResult GetActualMatchResult()
         {
             // Implement logic to retrieve actual match results from your data source.

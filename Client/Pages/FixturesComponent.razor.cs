@@ -14,7 +14,8 @@ namespace PollaEngendrilClientHosted.Client.Pages
     {
 
         private IEnumerable<FixtureViewModel> fixtures;
-        private bool javascriptInitialized = false;
+        private int TotalPointsObtained;
+        private List<UserPredictionViewModel> allPredictions;
 
         bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
         {
@@ -60,7 +61,6 @@ namespace PollaEngendrilClientHosted.Client.Pages
             }
         }
 
-
         private async Task LoadFixtures()
         {
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -71,6 +71,21 @@ namespace PollaEngendrilClientHosted.Client.Pages
                 if (user?.Identity?.Name != null)
                 {
                     fixtures = await fixturesApiService.GetFixtures(user.Identity.Name);
+                    TotalPointsObtained = fixtures.Sum(f => f.PointsObtained ?? 0);
+                }
+            }
+        }
+
+        private async Task LoadPredictions()
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user?.Identity?.IsAuthenticated == true)
+            {
+                if (user?.Identity?.Name != null)
+                {
+                    allPredictions = await predictionApiService.GetAllPredictionsAsync();
                 }
             }
         }
@@ -155,6 +170,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             await GetUserId();
+            await LoadPredictions();
             await LoadFixtures();
         }
     }

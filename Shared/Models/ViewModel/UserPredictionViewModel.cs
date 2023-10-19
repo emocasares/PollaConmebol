@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PollaEngendrilClientHosted.Shared.Models.ViewModel
 {
-    public class OtherUserPredictionViewModel
+    public class UserPredictionViewModel
     {
         public int MatchId { get; set; }
         public string UserName { get; set; }

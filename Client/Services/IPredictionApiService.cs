@@ -7,6 +7,7 @@ namespace PollaEngendrilClientHosted.Client.Services
     {
         Task<List<PlayerLeaderboardViewModel>> GetLeaderboardAsync();
         Task<bool> SavePredictionsAsync(PredictionRequestDTO prediction);
-        Task<List<OtherUserPredictionViewModel>> GetOthersPredictionsAsync(int matchId, int userId);
+        Task<List<UserPredictionViewModel>> GetOthersPredictionsAsync(int matchId, int userId);
+        Task<List<UserPredictionViewModel>> GetAllPredictionsAsync();
     }
 }

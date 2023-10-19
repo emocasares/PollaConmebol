@@ -6,7 +6,7 @@
 
 @if (ShowPredictions)
 {
-    <MudTable T="UserPredictionViewModel" Items="otherPredictions" Breakpoint="Breakpoint.None">
+    <MudTable T="UserPredictionViewModel" Items="matchPredictions" Breakpoint="Breakpoint.None">
         <HeaderContent>
             <MudTh Width="15%">Usuario</MudTh>
             <MudTh Width="30%">Marcador Predicho</MudTh>
@@ -21,23 +21,26 @@
 }
 
 @code {
-    private List<UserPredictionViewModel> otherPredictions;
+    private List<UserPredictionViewModel> matchPredictions;
 
     [Parameter]
-    public int MatchId { get; set; }
+    public int? MatchId { get; set; }
 
     [Parameter]
     public bool ShowPredictions { get; set; }
 
-    private async Task LoadOtherPredictions()
+    [Parameter]
+    public List<UserPredictionViewModel> AllPredictions { get; set; }
+
+    private async Task LoadPredictionsForMatch()
     {
-        if (otherPredictions is null)
-            otherPredictions = await predictionApiService.GetOthersPredictionsAsync(MatchId, UserState.UserId.Value);
+        if (AllPredictions is not null && MatchId.HasValue)
+            matchPredictions = AllPredictions.Where(p => p.MatchId == MatchId).ToList();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadOtherPredictions();
+        await LoadPredictionsForMatch();
     }
 
 }

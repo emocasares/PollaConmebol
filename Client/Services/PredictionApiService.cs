@@ -1,4 +1,5 @@
 ﻿using PollaEngendrilClientHosted.Shared.Models.DTO;
+using PollaEngendrilClientHosted.Shared.Models.Entity;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
 using System.Net.Http.Json;
 
@@ -50,13 +51,22 @@ namespace PollaEngendrilClientHosted.Client.Services
             return 0;
         }
 
-        public async Task<List<OtherUserPredictionViewModel>> GetOthersPredictionsAsync(int matchId, int userId)
+        public async Task<List<UserPredictionViewModel>> GetOthersPredictionsAsync(int matchId, int userId)
         {
             var response = await _httpClient.GetAsync($"api/predictions/otherspredictions/{matchId}/{userId}");
             response.EnsureSuccessStatusCode();
-            var resulstsFromOtherPlayers = await response.Content.ReadFromJsonAsync<List<OtherUserPredictionViewModel>>();
+            var resulstsFromOtherPlayers = await response.Content.ReadFromJsonAsync<List<UserPredictionViewModel>>();
 
             return resulstsFromOtherPlayers;
+        }
+
+        public async Task<List<UserPredictionViewModel>> GetAllPredictionsAsync()
+        {
+            var response = await _httpClient.GetAsync($"api/predictions/allpredictions");
+            response.EnsureSuccessStatusCode();
+            var allPredictions = await response.Content.ReadFromJsonAsync<List<UserPredictionViewModel>>();
+
+            return allPredictions;
         }
     }
 }

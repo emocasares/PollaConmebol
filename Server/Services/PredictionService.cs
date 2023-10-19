@@ -6,8 +6,8 @@ using PollaEngendrilClientHosted.Shared;
 using PollaEngendrilClientHosted.Shared.Models.DTO;
 using PollaEngendrilClientHosted.Shared.Models.Entity;
 using PollaEngendrilClientHosted.Shared.Models.ViewModel;
-using System.Linq;
 using System.Reflection;
+using System.Linq;
 
 namespace PollaEngendrilClientHosted.Server.Services
 {
@@ -105,13 +105,76 @@ namespace PollaEngendrilClientHosted.Server.Services
             return response;
         }
 
-        public List<OtherUserPredictionViewModel> GetOthersPredictions(int matchId, int userId)
+        public async Task<List<UserPredictionViewModel>> GetAllPredictions()
+        {
+            var eligibleUsers = dbContext.Users
+                                .Where(userEligibleSpecification.IsSatisfiedBy)
+                                .ToList();
+
+            var matches = await dbContext.Matches.ToListAsync();
+            var predictions = await dbContext.Predictions.ToListAsync();
+
+            var allPredictions = new List<UserPredictionViewModel>();
+
+            foreach (var user in eligibleUsers)
+            {
+                var userId = user.Id;
+                foreach (var match in matches)
+                {
+                    var matchId = match.Id;
+
+                    var predictionsOfUser = predictions
+                    .Where(prediction =>
+                            eligibleUsers
+                            .Select(user => user.Id)
+                            .Contains(prediction.UserId) &&
+                            prediction.MatchId == matchId &&
+                            prediction.UserId == userId)
+                    .ToList();
+
+                    var predictionsForMatchAndUser = predictionsOfUser.Select(prediction =>
+                    {
+                        var user = eligibleUsers.FirstOrDefault(u => u.Id == prediction.UserId);
+
+                        var actualMatch = matches.FirstOrDefault(m => m.Id == matchId);
+                        var actualResult = new MatchResult
+                        {
+                            HomeTeamScore = actualMatch?.HomeTeamScore,
+                            AwayTeamScore = actualMatch?.AwayTeamScore,
+                        };
+
+                        var predictedResult = new PredictionRequestDTO
+                        {
+                            HomeTeamScore = prediction?.HomeTeamScore,
+                            AwayTeamScore = prediction?.AwayTeamScore
+                        };
+
+                        var pointsObtained = CalculatePoints(actualResult, predictedResult).Points;
+
+                        return new UserPredictionViewModel
+                        {
+                            MatchId = matchId,
+                            UserName = user?.UserName,
+                            HomeTeamPredictedScore = prediction?.HomeTeamScore.Value,
+                            AwayTeamPredictedScore = prediction?.AwayTeamScore.Value,
+                            PointsObtained = pointsObtained
+                        };
+                    }).ToList();
+                    allPredictions.AddRange(predictionsForMatchAndUser);
+                }
+            }
+            return allPredictions;
+
+        }
+        public List<UserPredictionViewModel> GetOthersPredictions(int matchId, int userId)
         {
             var eligibleUsers = dbContext.Users
                 .Where(userEligibleSpecification.IsSatisfiedBy)
                 .ToList();
 
-            var predictions = dbContext.Predictions
+            var matches = dbContext.Matches.ToList();
+            var predictions = dbContext.Predictions.ToList();
+            var predictionsOfUser = predictions
                             .Where(prediction =>
                                     eligibleUsers
                                     .Select(user => user.Id)
@@ -120,11 +183,11 @@ namespace PollaEngendrilClientHosted.Server.Services
                                     prediction.UserId != userId)
                             .ToList();
 
-            var otherPredictions = predictions.Select(prediction =>
+            var otherPredictions = predictionsOfUser.Select(prediction =>
             {
                 var user = eligibleUsers.FirstOrDefault(u => u.Id == prediction.UserId);
 
-                var actualMatch = dbContext.Matches.FirstOrDefault(m => m.Id == matchId);
+                var actualMatch = matches.FirstOrDefault(m => m.Id == matchId);
                 var actualResult = new MatchResult
                 {
                     HomeTeamScore = actualMatch?.HomeTeamScore,
@@ -139,7 +202,7 @@ namespace PollaEngendrilClientHosted.Server.Services
 
                 var pointsObtained = CalculatePoints(actualResult, predictedResult).Points;
 
-                return new OtherUserPredictionViewModel
+                return new UserPredictionViewModel
                 {
                     MatchId = matchId,
                     UserName = user?.UserName, 

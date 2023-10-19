@@ -29,11 +29,11 @@
             </div>
 
             <div class="matches">
-                    <div class="totalPoints">Puntos
+                <div class="totalPoints">Puntos
                     <div class="rcircle">
-                        <div class="pointsObtained">27</div>
+                        <div class="pointsObtained">@TotalPointsObtained</div>
                     </div>
-                    </div>
+                </div>
 
             @if (fixtures != null)
             {
@@ -86,7 +86,7 @@
                                 ToggledChanged="newValue => ToggleExpansion(fixture, newValue)"
                                 />
 
-                                <OtherPlayersPredictions MatchId="fixture.Id" ShowPredictions="fixture.ShowOtherPredictions"/>
+                                <PlayersPredictions MatchId="fixture.Id" ShowPredictions="fixture.ShowOtherPredictions" AllPredictions="allPredictions"/>
                             </div>
                     }
                 }
