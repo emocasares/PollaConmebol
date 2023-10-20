@@ -16,7 +16,8 @@ namespace PollaEngendrilClientHosted.Client.Pages
         private IEnumerable<FixtureViewModel> fixtures;
         private int TotalPointsObtained;
         private List<UserPredictionViewModel> allPredictions;
-
+        private bool firstExecution = true;
+        private IJSObjectReference JSmoduleScroll;
         bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
         {
             if (Env.IsDevelopment())
@@ -92,14 +93,17 @@ namespace PollaEngendrilClientHosted.Client.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (fixtures != null)
+            if (firstExecution)
             {
-                foreach (var fixture in fixtures)
+                if (fixtures != null)
                 {
-                    if (!fixture.HomeTeamRealScore.HasValue)
+                    foreach (var fixture in fixtures)
                     {
-                        await JSRuntime.InvokeVoidAsync("scrollToElement", $"homeScore{fixture.Id}");
-                        break;
+                        if (!fixture.HomeTeamRealScore.HasValue)
+                        {
+                            await JSmoduleScroll.InvokeVoidAsync("scrollToElement", $"homeScore{fixture.Id}");
+                            break;
+                        }
                     }
                 }
             }
@@ -169,6 +173,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            JSmoduleScroll = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Pages/FixturesComponent.razor.js");
             await GetUserId();
             await LoadPredictions();
             await LoadFixtures();

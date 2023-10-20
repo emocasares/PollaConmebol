@@ -8,3 +8,5 @@ function scrollToElement(elementId) {
     }
     firstExecution = false;
 }
+
+export { firstExecution, scrollToElement };
