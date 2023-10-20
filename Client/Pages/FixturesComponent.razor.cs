@@ -16,7 +16,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
         private IEnumerable<FixtureViewModel> fixtures;
         private int TotalPointsObtained;
         private List<UserPredictionViewModel> allPredictions;
-        private bool firstExecution = true;
+        private bool isFirstExecution = true;
         private IJSObjectReference JSmoduleScroll;
         bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
         {
@@ -93,7 +93,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstExecution)
+            if (isFirstExecution)
             {
                 if (fixtures != null)
                 {
@@ -102,6 +102,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
                         if (!fixture.HomeTeamRealScore.HasValue)
                         {
                             await JSmoduleScroll.InvokeVoidAsync("scrollToElement", $"homeScore{fixture.Id}");
+                            isFirstExecution = false;
                             break;
                         }
                     }
