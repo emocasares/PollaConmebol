@@ -97,3 +97,7 @@ button:disabled {
     left: 0;
     float: right;
 }
+
+.hide-match {
+    display: none;
+}

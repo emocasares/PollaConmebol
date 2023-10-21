@@ -17,6 +17,7 @@ namespace PollaEngendrilClientHosted.Client.Pages
         private int TotalPointsObtained;
         private List<UserPredictionViewModel> allPredictions;
         private bool isFirstExecution = true;
+        private bool hideOldMatches = true;
         private IJSObjectReference JSmoduleScroll;
         bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
         {
