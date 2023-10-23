@@ -78,7 +78,7 @@ namespace PollaEngendrilClientHosted.Server.Services
         public PredictionResponseDTO CalculatePoints(MatchResult actualResult, PredictionRequestDTO predictedResult)
         {
             int points = 0;
-            if (!actualResult.AwayTeamScore.HasValue || !actualResult.HomeTeamScore.HasValue)
+            if (!actualResult.AwayTeamScore.HasValue || !actualResult.HomeTeamScore.HasValue || !predictedResult.AwayTeamScore.HasValue || !predictedResult.HomeTeamScore.HasValue)
             {
                 return new PredictionResponseDTO
                 {
