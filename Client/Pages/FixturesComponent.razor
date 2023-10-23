@@ -49,34 +49,39 @@
                             </div>
                         }
                             <p>Fecha: @fixture.Date</p>
-                            <!-- Pronóstico -->
+                            <div class="predictions-content">
                             <div class="pronostico">
                             <div class="banderas">
-                            <img src="@fixture.HomeTeamFlag" alt="Bandera de @fixture.HomeTeam" title="@fixture.HomeTeam">
-                            <span>@fixture.HomeTeam</span>
-                            <img src="@fixture.AwayTeamFlag" alt="Bandera de @fixture.AwayTeam" title="@fixture.AwayTeam">
-                            <span>@fixture.AwayTeam</span>
+                                <img src="@fixture.HomeTeamFlag" alt="Bandera de @fixture.HomeTeam" title="@fixture.HomeTeam">
+                                <span class="country-name">@fixture.HomeTeam</span>
                             </div>
 
+                            <div class="input-scores">
                             <input type="number" id='@($"homeScore{fixture.Id}")'
                                     placeholder="" 
                                     @bind="@fixture.HomeTeamPredictedScore"
                                     disabled="@IsInputDisabled(fixture, isHome: true)"
                                     class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
                                     @onblur="async () => await ValidateAndSave(fixture)" />
-
+                                <input type="number" id='@($"realHomeScore{fixture.Id}")' placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
+                            </div>
+                            <div class="input-scores">
                             <input type="number" id='@($"awayScore{fixture.Id}")'
                                     placeholder=""
                                     @bind="@fixture.AwayTeamPredictedScore"
                                     disabled="@IsInputDisabled(fixture, isHome: false)"
                                     class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border green-border-success" : "")"
                                     @onblur="async () => await ValidateAndSave(fixture)" />
+                                <input type="number" id='@($"realAwayScore{fixture.Id}")' placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
+                            </div>
+
+                            <div class="banderas">
+                                <img src="@fixture.AwayTeamFlag" alt="Bandera de @fixture.AwayTeam" title="@fixture.AwayTeam">
+                                <span class="country-name">@fixture.AwayTeam</span>
+                            </div>
 
                             </div>
-                            <!-- Resultado Real -->
-                            <div class="real-score">
-                                <input type="number" id='@($"realHomeScore{fixture.Id}")' placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
-                                <input type="number" id='@($"realAwayScore{fixture.Id}")' placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
+
                             </div>
 
                             <MudToggleIconButton 
@@ -89,6 +94,7 @@
                                 />
 
                                 <PlayersPredictions MatchId="fixture.Id" ShowPredictions="fixture.ShowOtherPredictions" AllPredictions="allPredictions"/>
+
                             </div>
                     }
             }

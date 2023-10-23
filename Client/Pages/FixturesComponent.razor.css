@@ -17,7 +17,7 @@
 img {
     width: 30px;
     height: 20px;
-    margin-right: 10px;
+    margin-top: -40px;
 }
 
 input[type="number"] {
@@ -50,6 +50,11 @@ button:disabled {
 
 .pronostico, .real-score {
     margin-bottom: 10px;
+}
+
+.pronostico {
+    display: inline-flex;
+    align-items: center;
 }
 
 .is-invalid {
@@ -100,4 +105,25 @@ button:disabled {
 
 .hide-match {
     display: none;
+}
+
+.country-name{
+    font-weight: bold;
+}
+
+.banderas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.input-scores {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-scores input[type="number"] {
+    margin-block-end: 10px;
 }
