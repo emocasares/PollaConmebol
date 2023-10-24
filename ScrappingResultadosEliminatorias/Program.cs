@@ -49,7 +49,7 @@ internal class Program
             {
                 driver.Navigate().GoToUrl("https://www.google.com/search?q=conmebol+qualifiers&sca_esv=571003301&sxsrf=AM9HkKmJlo2qrTJJS8CX89-I36q7iOVkrg%3A1696528098923&source=hp&ei=4vYeZci4NICmqtsP96CGkAM&iflsig=AO6bgOgAAAAAZR8E8vB-h30eVfxphbSWdMuwAEXLZfZt&gs_ssp=eJzj4tZP1zc0MjLLzbNMMWD0Ek7Oz8tNTcrPUSgsTczJTMtMLSoGALEfC1A&oq=conmebol+q&gs_lp=Egdnd3Mtd2l6Igpjb25tZWJvbCBxKgIIATIIEAAYywEYgAQyBRAuGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgARImjxQAFjpHXABeACQAQCYAYECoAGnD6oBBjAuMTAuMbgBA8gBAPgBAcICBBAjGCfCAgcQLhiKBRgnwgILEC4YgAQYxwEY0QPCAgcQIxiKBRgnwgIMECMYigUYExiABBgnwgIIEC4YywEYgATCAgoQLhjLARiABBgKwgIHEC4YgAQYCsICBxAAGIAEGAo&sclient=gws-wiz#sie=lg;/g/11t9_xctp4;2;/g/1226mn9d;mt;fp;1;;;");
 
-                Thread.Sleep(500);
+                Thread.Sleep(2400);
 
                 IWebElement visibleElement = driver.FindElement(By.XPath("//div[@id='liveresults-sports-immersive__updatable-league-matches']"));
 
@@ -103,7 +103,27 @@ internal class Program
 
                         var nodeFechaPartidoJugado = partido.SelectSingleNode(".//div[@class='imspo_mt__cmd']//span[last()]");
                         var nodeFechaPartidoNoJugado = partido.SelectSingleNode(".//div[@class='imspo_mt__ns-pm-s']");
-                        string fechaPartido = nodeFechaPartidoJugado != null ? nodeFechaPartidoJugado.InnerText : $"{nodeFechaPartidoNoJugado.ChildNodes[0].InnerText} HORA: {nodeFechaPartidoNoJugado.ChildNodes[1].InnerText}";
+
+                        var timeOnly = TimeOnly.MaxValue;
+
+                        var timeString = nodeFechaPartidoNoJugado!=null?nodeFechaPartidoNoJugado.ChildNodes[1].InnerText:"12:00";
+
+                        // Define a regular expression pattern for "hh:mm" format
+                        var timePattern = @"(\d{1,2}:\d{2})";
+
+                        // Use Regex to match and extract the time
+                        var matchTime = Regex.Match(timeString, timePattern);
+
+                        if (matchTime.Success)
+                        {
+                            string time = matchTime.Groups[1].Value;
+                            if (DateTime.TryParseExact(time, "HH:mm", null, System.Globalization.DateTimeStyles.None, out DateTime parsedTime))
+                            {
+                                timeOnly = new TimeOnly(parsedTime.Hour, parsedTime.Minute);
+                            }
+                        }
+
+                        string fechaPartido = nodeFechaPartidoJugado != null ? nodeFechaPartidoJugado.InnerText : $"{nodeFechaPartidoNoJugado.ChildNodes[0].InnerText} HORA: {timeOnly}";
 
                         Console.WriteLine("Bandera 1: " + bandera1);
                         Console.WriteLine("Bandera 2: " + bandera2);
@@ -120,7 +140,12 @@ internal class Program
                         if (nodeFechaPartidoJugado != null)
                         {
                             string patternPartidoJugado = @"^(\d{1,2}/\d{1,2})$";
-                            var regexMatch = Regex.Match(nodeFechaPartidoJugado.InnerText, patternPartidoJugado);
+                            var fechaPartidoJugado = nodeFechaPartidoJugado.InnerText;
+                            if (fechaPartidoJugado.Contains(","))
+                            {
+                                fechaPartidoJugado = fechaPartidoJugado.Split(',')[1].Trim();
+                            }
+                            var regexMatch = Regex.Match(fechaPartidoJugado, patternPartidoJugado);
                             if (regexMatch.Success)
                             {
                                 string fechaCompleta = regexMatch.Groups[1].Value;
@@ -169,10 +194,38 @@ internal class Program
                                         fechaExactaPartido = new DateTime(anho, mes, dia);
                                     }
                                 }
+                                else
+                                {
+                                    string patternPartidoJugado = @"^(\d{1,2}/\d{1,2})$";
+                                    var nodeValue = nodeFechaPartidoNoJugado.ChildNodes[0].InnerText;
+                                    if (nodeValue.Contains(","))
+                                    {
+                                        nodeValue = nodeValue.Split(',')[1].Trim();
+                                    }
+                                    regexMatch = Regex.Match(nodeValue, patternPartidoJugado);
+                                    if (regexMatch.Success)
+                                    {
+                                        string fechaCompleta = regexMatch.Groups[1].Value;
+                                        string[] partes = fechaCompleta.Split('/');
+
+                                        if (partes.Length == 2)
+                                        {
+                                            int dia = int.Parse(partes[0]);
+                                            int mes = int.Parse(partes[1]);
+                                            int anio = 2023;
+                                            fechaExactaPartido = new DateTime(anio, mes, dia);
+                                        }
+                                    }
+                                }
 
                             }
                         }
                         match.Date = fechaExactaPartido;
+                        if (!timeOnly.Equals(TimeOnly.MaxValue))
+                        {
+                            match.Date = match.Date.AddMinutes(timeOnly.Minute);
+                            match.Date = match.Date.AddHours(timeOnly.Hour);
+                        }
                         Console.WriteLine(match.Date.ToLongDateString());
                         await matchService.InsertOrUpdateMatchAsync(match);
                     }
