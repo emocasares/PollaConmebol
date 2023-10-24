@@ -48,7 +48,7 @@
                                 <div class="pointsObtained">@fixture?.PointsObtained</div>
                             </div>
                         }
-                            <p>Fecha: @fixture.Date</p>
+                            <p>Fecha: @fixture.DateString</p>
                             <div class="predictions-content">
                             <div class="pronostico">
                             <div class="banderas">
@@ -60,7 +60,7 @@
                             <input type="number" id='@($"homeScore{fixture.Id}")'
                                     placeholder="" 
                                     @bind="@fixture.HomeTeamPredictedScore"
-                                    disabled="@IsInputDisabled(fixture, isHome: true)"
+                                    disabled="@IsInputDisabled(fixture)"
                                     class="@(fixture.IsHomeScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border-success green-border" : "")"
                                     @onblur="async () => await ValidateAndSave(fixture)" />
                                 <input type="number" id='@($"realHomeScore{fixture.Id}")' placeholder="X" value="@fixture.HomeTeamRealScore" disabled>
@@ -69,7 +69,7 @@
                             <input type="number" id='@($"awayScore{fixture.Id}")'
                                     placeholder=""
                                     @bind="@fixture.AwayTeamPredictedScore"
-                                    disabled="@IsInputDisabled(fixture, isHome: false)"
+                                    disabled="@IsInputDisabled(fixture)"
                                     class="@(fixture.IsAwayScoreInvalid ? "is-invalid" : "") @(fixture.MustShowSavedSuccesfully ? "green-border green-border-success" : "")"
                                     @onblur="async () => await ValidateAndSave(fixture)" />
                                 <input type="number" id='@($"realAwayScore{fixture.Id}")' placeholder="X" value="@fixture.AwayTeamRealScore" disabled>
@@ -96,7 +96,7 @@
                                 <PlayersPredictions MatchId="fixture.Id" ShowPredictions="fixture.ShowOtherPredictions" AllPredictions="allPredictions"/>
 
                             </div>
-                    }
+                }
             }
             else
             {
