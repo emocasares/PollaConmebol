@@ -42,11 +42,12 @@ namespace PollaEngendrilClientHosted.Client.Pages
             {
                 if (!UserState.UserId.HasValue)
                 {
-                    var userName = user.Identity.Name;
+                    var username = user.Identity.Name;
+                    var nickname = string.Empty;
                     var nicknameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "nickname");
                     if (nicknameClaim != null)
                     {
-                        userName = nicknameClaim.Value;
+                        nickname = nicknameClaim.Value;
                     }
 
                     //userName = "A. Casares";
@@ -55,10 +56,10 @@ namespace PollaEngendrilClientHosted.Client.Pages
                     //userName = "sebasaliaga2515@gmail.com";
                     //userName = "Rafael Weisson";
                     //userName = "Javier Cañas";
-                    var userId = await usersApiService.GetUserIdByUserName(userName);
+                    var userId = await usersApiService.GetUserIdByUserNameOrNickname(username, nickname);
                     if (userId == -1)
                     {
-                        userId = await usersApiService.CreateUser(userName);
+                        userId = await usersApiService.CreateUser(username, nickname);
                     }
                     UserState.UserId = userId;
                 }
@@ -75,13 +76,14 @@ namespace PollaEngendrilClientHosted.Client.Pages
                 if (user?.Identity?.Name != null)
                 {
                     var userName = user.Identity.Name;
+                    var nickName = "";
                     var nicknameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "nickname");
                     if (nicknameClaim != null)
                     {
-                        userName = nicknameClaim.Value;
+                        nickName = nicknameClaim.Value;
                     }
 
-                    fixtures = await fixturesApiService.GetFixtures(userName);
+                    fixtures = await fixturesApiService.GetFixtures(userName, nickName);
                     TotalPointsObtained = fixtures.Sum(f => f.PointsObtained ?? 0);
                 }
             }

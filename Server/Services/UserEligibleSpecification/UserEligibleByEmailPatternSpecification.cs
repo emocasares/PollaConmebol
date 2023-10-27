@@ -6,7 +6,7 @@ namespace PollaEngendrilClientHosted.Server.Services.UserEligibleSpecification
     {
         public bool IsSatisfiedBy(User user)
         {
-            return !user.UserName.Contains("@mailinator.com");
+            return !user.Name.Contains("@mailinator.com");
         }
     }
 }

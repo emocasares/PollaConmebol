@@ -4,6 +4,6 @@ namespace PollaEngendrilClientHosted.Server.Services
 {
     public interface IFixturesService
     {
-        List<FixtureViewModel> GetFixture(string username);
+        List<FixtureViewModel> GetFixture(string username, string nickname);
     }
 }

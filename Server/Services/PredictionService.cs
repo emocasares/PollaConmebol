@@ -69,7 +69,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                                               .Select((kvp, index) => new PlayerLeaderboardViewModel
                                               {
                                                   Position = index + 1,
-                                                  Name = kvp.Key.UserName,
+                                                  Name = kvp.Key.NickName,
                                                   Score = kvp.Value
                                               }).ToList();
             return sortedLeaderboard;
@@ -154,7 +154,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                         return new UserPredictionViewModel
                         {
                             MatchId = matchId,
-                            UserName = user?.UserName,
+                            UserName = user?.NickName,
                             HomeTeamPredictedScore = prediction?.HomeTeamScore.Value,
                             AwayTeamPredictedScore = prediction?.AwayTeamScore.Value,
                             PointsObtained = pointsObtained
@@ -205,7 +205,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                 return new UserPredictionViewModel
                 {
                     MatchId = matchId,
-                    UserName = user?.UserName, 
+                    UserName = user?.NickName, 
                     HomeTeamPredictedScore = prediction?.HomeTeamScore.Value,
                     AwayTeamPredictedScore = prediction?.AwayTeamScore.Value,
                     PointsObtained = pointsObtained

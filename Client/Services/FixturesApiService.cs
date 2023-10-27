@@ -11,11 +11,11 @@ public class FixturesApiService : IFixturesApiService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<FixtureViewModel>> GetFixtures(string user)
+    public async Task<IEnumerable<FixtureViewModel>> GetFixtures(string user, string nickname)
     {
         try
         {
-            var response = await _httpClient.GetAsync($"api/fixture/matches/{user}");
+            var response = await _httpClient.GetAsync($"api/fixture/matches/{user}/{nickname}");
             response.EnsureSuccessStatusCode();
             var fixtures = await response.Content.ReadFromJsonAsync<List<FixtureViewModel>>();
             return fixtures;

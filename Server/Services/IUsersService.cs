@@ -2,7 +2,7 @@
 {
     public interface IUsersService
     {
-        int GetUserIdByUsername(string username);
-        int CreateUser(string username);
+        int GetUserIdByUsernameOrNickname(string username, string nickname);
+        int CreateUser(string username, string nickname);
     }
 }

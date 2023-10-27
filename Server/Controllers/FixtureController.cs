@@ -25,10 +25,10 @@ namespace PollaEngendrilClientHosted.Server.Controllers
             this.usersService = usersService;
         }
 
-        [HttpGet("matches/{user}")]
-        public IActionResult GetFixtures(string user)
+        [HttpGet("matches/{user}/{nickname}")]
+        public IActionResult GetFixtures(string user, string nickname)
         {
-            var fixture = this.fixturesService.GetFixture(user);
+            var fixture = this.fixturesService.GetFixture(user, nickname);
             return Ok(fixture);
         }
 

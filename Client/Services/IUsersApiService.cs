@@ -2,7 +2,8 @@
 {
     public interface IUsersApiService
     {
-        Task<int> GetUserIdByUserName(string username);
-        Task<int> CreateUser(string username);
+        Task<int> GetUserIdByUserNameOrNickname(string username, string nickname);
+
+        Task<int> CreateUser(string username, string nickname);
     }
 }

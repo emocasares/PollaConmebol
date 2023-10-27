@@ -13,11 +13,16 @@ namespace PollaEngendrilClientHosted.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<int> CreateUser(string username)
+        public async Task<int> CreateUser(string username, string nickname)
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"api/user/{username}", username);
+                var data = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("username", username),
+                    new KeyValuePair<string, string>("nickname", nickname)
+                });
+                var response = await _httpClient.PostAsJsonAsync($"api/user/{username}/{nickname}", data);
                 response.EnsureSuccessStatusCode();
                 if (response.IsSuccessStatusCode)
                 {
@@ -32,11 +37,11 @@ namespace PollaEngendrilClientHosted.Client.Services
             }
         }
 
-        public async Task<int> GetUserIdByUserName(string username)
+        public async Task<int> GetUserIdByUserNameOrNickname(string username, string nickname)
         {
             try
             {
-                var response = await _httpClient.GetAsync($"api/user/userid/{username}");
+                var response = await _httpClient.GetAsync($"api/user/userid/{username}/{nickname}");
                 response.EnsureSuccessStatusCode();
                 var userId = await response.Content.ReadFromJsonAsync<int>();
                 return userId;

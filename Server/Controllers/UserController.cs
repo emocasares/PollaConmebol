@@ -14,17 +14,17 @@ namespace PollaEngendrilClientHosted.Server.Controllers
             this.usersService = usersService;
         }
 
-        [HttpGet("userid/{username}")]
-        public IActionResult GetUserByUsername(string username)
+        [HttpGet("userid/{username}/{nickname}")]
+        public IActionResult GetUserByUsernameOrNickname(string username, string nickname)
         {
-            var userId = usersService.GetUserIdByUsername(username);
+            var userId = usersService.GetUserIdByUsernameOrNickname(username, nickname);
             return Ok(userId);
         }
 
-        [HttpPost("{username}")]
-        public IActionResult CreateUser(string username)
+        [HttpPost("{username}/{nickname}")]
+        public IActionResult CreateUser(string username, string nickname)
         {
-            var userId = usersService.CreateUser(username);
+            var userId = usersService.CreateUser(username, nickname);
             return Ok(userId);
         }
     }
