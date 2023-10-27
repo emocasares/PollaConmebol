@@ -18,8 +18,10 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
-            <ColGroup>
+        @if (leaderboard != null)
+        {
+            <MudTable Items="@leaderboard" Hover="true" Breakpoint="Breakpoint.None" Loading="@_loading" LoadingProgressColor="Color.Info">
+                <ColGroup>
                 <col />
                 <col Class="clm-row-small" />
                 <col />
@@ -34,7 +36,12 @@
                 <MudTd Class="clm-row-small">@player.Name</MudTd>
                 <MudTd>@player.Score</MudTd>
             </RowTemplate>
-        </MudTable>
+            </MudTable>
+        }
+        else
+        {
+            <LoaderComponent />
+        }
     </Authorized>
     <NotAuthorized>
         <a href="authentication/login" class="login-logout">Log in</a>
