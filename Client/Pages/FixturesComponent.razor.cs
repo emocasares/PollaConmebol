@@ -19,16 +19,12 @@ namespace PollaEngendrilClientHosted.Client.Pages
         private bool isFirstExecution = true;
         private bool hideOldMatches = true;
         private IJSObjectReference JSmoduleScroll;
-        bool IsInputDisabled(FixtureViewModel fixture, bool isHome)
+        bool IsInputDisabled(FixtureViewModel fixture)
         {
-            if (Env.IsDevelopment())
-                return false;
+            //if (Env.IsDevelopment())
+            //    return false;
 
-            if (isHome)
-            {
-                return fixture.HomeTeamRealScore.HasValue || fixture.IsLocked;
-            }
-            return fixture.AwayTeamRealScore.HasValue || fixture.IsLocked;
+            return fixture.IsLocked;
         }
 
         private void ToggleExpansion(FixtureViewModel fixture, bool newValue)
@@ -47,6 +43,12 @@ namespace PollaEngendrilClientHosted.Client.Pages
                 if (!UserState.UserId.HasValue)
                 {
                     var userName = user.Identity.Name;
+                    var nicknameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "nickname");
+                    if (nicknameClaim != null)
+                    {
+                        userName = nicknameClaim.Value;
+                    }
+
                     //userName = "A. Casares";
                     //userName = "Juan Pablo Aliaga";
                     //userName = "Miguel S. Cartagenova M.";
@@ -72,7 +74,14 @@ namespace PollaEngendrilClientHosted.Client.Pages
             {
                 if (user?.Identity?.Name != null)
                 {
-                    fixtures = await fixturesApiService.GetFixtures(user.Identity.Name);
+                    var userName = user.Identity.Name;
+                    var nicknameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "nickname");
+                    if (nicknameClaim != null)
+                    {
+                        userName = nicknameClaim.Value;
+                    }
+
+                    fixtures = await fixturesApiService.GetFixtures(userName);
                     TotalPointsObtained = fixtures.Sum(f => f.PointsObtained ?? 0);
                 }
             }

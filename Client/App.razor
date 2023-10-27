@@ -3,7 +3,12 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                    <p style="padding: 20px;">Espera...</p>
+                    <div style="position: absolute; top: 30vh; width: 100%; text-align: center;">
+                        <h1>Polla Eliminatorias Conmebol</h1>
+                        <div style="display:flex; gap:10px; justify-content:center; align-items:center">
+                            <span class="loader"></span>
+                        </div>
+                    </div>
                 </Authorizing>
                 <NotAuthorized>
                     <PollaEngendrilClientHosted.Client.Pages.NoAuthorizedComponent />
