@@ -126,4 +126,5 @@ button:disabled {
 
 .input-scores input[type="number"] {
     margin-block-end: 10px;
+    text-align: center;
 }

@@ -69,7 +69,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                                               .Select((kvp, index) => new PlayerLeaderboardViewModel
                                               {
                                                   Position = index + 1,
-                                                  Name = kvp.Key.NickName,
+                                                  Name = string.IsNullOrEmpty(kvp.Key.Name)?kvp.Key.NickName: kvp.Key.Name,
                                                   Score = kvp.Value
                                               }).ToList();
             return sortedLeaderboard;
