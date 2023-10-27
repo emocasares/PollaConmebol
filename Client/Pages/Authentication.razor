@@ -28,6 +28,11 @@
                 var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
                 var user = authState.User;
                 var userName = user.Identity.Name;
+                var nicknameClaim = user.Claims.FirstOrDefault(claim => claim.Type == "nickname");
+                if (nicknameClaim != null)
+                {
+                    userName = nicknameClaim.Value;
+                }
                 UserState.UserName = userName;
             }
 
