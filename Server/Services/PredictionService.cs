@@ -154,7 +154,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                         return new UserPredictionViewModel
                         {
                             MatchId = matchId,
-                            UserName = user?.NickName,
+                            UserName = user?.Name,
                             HomeTeamPredictedScore = prediction?.HomeTeamScore.Value,
                             AwayTeamPredictedScore = prediction?.AwayTeamScore.Value,
                             PointsObtained = pointsObtained
@@ -205,7 +205,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                 return new UserPredictionViewModel
                 {
                     MatchId = matchId,
-                    UserName = user?.NickName, 
+                    UserName = user?.Name, 
                     HomeTeamPredictedScore = prediction?.HomeTeamScore.Value,
                     AwayTeamPredictedScore = prediction?.AwayTeamScore.Value,
                     PointsObtained = pointsObtained
