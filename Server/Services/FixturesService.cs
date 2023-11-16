@@ -26,8 +26,19 @@ namespace PollaEngendrilClientHosted.Server.Services
                 var pointsObtained = predictionService
                 .CalculatePoints(new Shared.MatchResult { AwayTeamScore = match?.AwayTeamScore, HomeTeamScore = match?.HomeTeamScore, },
                 new PredictionRequestDTO { HomeTeamScore = prediction?.HomeTeamScore, AwayTeamScore = prediction?.AwayTeamScore }).Points;
-                var currentDateTime = DateTime.Now;
-                return MapResultToFixtureViewModel(username, match, prediction, pointsObtained, currentDateTime);
+                DateTime utcNow = DateTime.UtcNow;
+
+                // Crear una zona horaria personalizada para UTC-5 (Bogotá, Lima, Quito)
+                TimeZoneInfo customTimeZone = TimeZoneInfo.CreateCustomTimeZone(
+                    "UTC-5",
+                    new TimeSpan(-5, 0, 0),
+                    "(GMT-05:00) Bogotá, Lima, Quito",
+                    "(GMT-05:00) Bogotá, Lima, Quito"
+                );
+
+                // Convertir la hora UTC a la zona horaria personalizada
+                DateTime customTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, customTimeZone);
+                return MapResultToFixtureViewModel(username, match, prediction, pointsObtained, customTime);
             }).ToList();
             return fixtures;
         }
