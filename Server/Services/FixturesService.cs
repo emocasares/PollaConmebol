@@ -28,7 +28,6 @@ namespace PollaEngendrilClientHosted.Server.Services
                 new PredictionRequestDTO { HomeTeamScore = prediction?.HomeTeamScore, AwayTeamScore = prediction?.AwayTeamScore }).Points;
                 DateTime utcNow = DateTime.UtcNow;
 
-                // Crear una zona horaria personalizada para UTC-5 (Bogotá, Lima, Quito)
                 TimeZoneInfo customTimeZone = TimeZoneInfo.CreateCustomTimeZone(
                     "UTC-5",
                     new TimeSpan(-5, 0, 0),
@@ -36,7 +35,6 @@ namespace PollaEngendrilClientHosted.Server.Services
                     "(GMT-05:00) Bogotá, Lima, Quito"
                 );
 
-                // Convertir la hora UTC a la zona horaria personalizada
                 DateTime customTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, customTimeZone);
                 return MapResultToFixtureViewModel(username, match, prediction, pointsObtained, customTime);
             }).ToList();

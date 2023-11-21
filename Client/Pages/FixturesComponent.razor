@@ -41,7 +41,7 @@
             {
                 @foreach (var fixture in fixtures)
                 {
-                    <div class="match @(fixture.HomeTeamRealScore.HasValue && hideOldMatches  ? "hide-match" : "")">
+                    <div class="match @(fixture.DateTime?.Date < DateTime.Now.Date && hideOldMatches  ? "hide-match" : "")">
                         @if (fixture.PointsObtained.HasValue)
                         {
                             <div class="rcircle">
