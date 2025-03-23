@@ -38,7 +38,15 @@ namespace PollaEngendrilClientHosted.Server.Services
                     .Any(m => m.Id == p.MatchId && m.HomeTeamScore.HasValue && m.AwayTeamScore.HasValue))
                 .ToList();
             var users = dbContext.Users.Where(this.userEligibleSpecification.IsSatisfiedBy).ToList();
+            var preloadPoints = dbContext.PreloadPointsPerUsers.ToList();
             var userPoints = new Dictionary<Shared.Models.Entity.User, int>();
+
+            foreach (var user in users)
+            {
+                var initialPoints = preloadPoints.FirstOrDefault(p => p.UserId == user.Id)?.InitialPoints ?? 0;
+                userPoints[user] = initialPoints;
+            }
+
             foreach (var prediction in predictions.Where(p => users.Any(u => u.Id == p.UserId)))
             {
                 var actualMatch = actualMatches.FirstOrDefault(m => m.Id == prediction.MatchId);
@@ -54,14 +62,7 @@ namespace PollaEngendrilClientHosted.Server.Services
 
                 if (user is not null)
                 {
-                    if (userPoints.ContainsKey(user))
-                    {
-                        userPoints[user] += points;
-                    }
-                    else
-                    {
-                        userPoints[user] = points;
-                    }
+                    userPoints[user] += points;
                 }
             }
 
@@ -69,7 +70,7 @@ namespace PollaEngendrilClientHosted.Server.Services
                                               .Select((kvp, index) => new PlayerLeaderboardViewModel
                                               {
                                                   Position = index + 1,
-                                                  Name = string.IsNullOrEmpty(kvp.Key.Name)?kvp.Key.NickName: kvp.Key.Name,
+                                                  Name = string.IsNullOrEmpty(kvp.Key.Name) ? kvp.Key.NickName : kvp.Key.Name,
                                                   Score = kvp.Value
                                               }).ToList();
             return sortedLeaderboard;

@@ -37,7 +37,7 @@ namespace PollaEngendrilClientHosted.Server.Services
 
                 DateTime customTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, customTimeZone);
                 return MapResultToFixtureViewModel(username, match, prediction, pointsObtained, customTime);
-            }).ToList();
+            }).OrderBy(s=>s.DateTime).ToList();
             return fixtures;
         }
 
